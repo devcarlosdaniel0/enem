@@ -1,6 +1,5 @@
 package correcao.enem.entity;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,15 +14,14 @@ import lombok.NoArgsConstructor;
 public class GabaritoAzul {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
+
+    @Enumerated(value = EnumType.STRING)
+    private Language language;
 
     @NotNull
-    private Integer numero;
+    private Integer questionNumber;
 
     @NotNull
-    private Character resposta;
-
-    @Nullable
-    @Enumerated(EnumType.STRING)
-    private Idioma idioma;
+    private Character correctAnswer;
 }

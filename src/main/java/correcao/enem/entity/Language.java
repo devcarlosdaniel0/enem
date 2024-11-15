@@ -1,6 +1,6 @@
 package correcao.enem.entity;
 
-public enum Idioma {
+public enum Language {
     INGLES,
     ESPANHOL
 }
