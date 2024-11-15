@@ -1,12 +1,13 @@
 package correcao.enem.service;
 
 import correcao.enem.dto.AnswerRequest;
-import correcao.enem.entity.GabaritoAzul;
-import correcao.enem.entity.Language;
+import correcao.enem.entity.*;
+import correcao.enem.repository.GabaritoAmareloRepository;
 import correcao.enem.repository.GabaritoAzulRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -14,24 +15,36 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class GabaritoService {
     private final GabaritoAzulRepository gabaritoAzulRepository;
+    private final GabaritoAmareloRepository gabaritoAmareloRepository;
 
     public String corrigir(AnswerRequest answerRequest) {
+        TestColor testColor = answerRequest.getTestColor();
         Map<Integer, Character> userAnswers = answerRequest.getAnswers();
         Language language = answerRequest.getLanguage();
 
-        List<GabaritoAzul> questions = gabaritoAzulRepository.findByLanguage(language);
+        List<GabaritoBase> questions = new ArrayList<>();
+        List<GabaritoBase> generalQuestions = new ArrayList<>();
 
-        List<GabaritoAzul> generalQuestions = gabaritoAzulRepository.findByLanguageIsNull();
+        switch (testColor) {
+            case AZUL:
+                questions.addAll(gabaritoAzulRepository.findByLanguage(language));
+                generalQuestions.addAll(gabaritoAzulRepository.findByLanguageIsNull());
+                break;
+            case AMARELA:
+                questions.addAll(gabaritoAmareloRepository.findByLanguage(language));
+                generalQuestions.addAll(gabaritoAmareloRepository.findByLanguageIsNull());
+                break;
+        }
 
         questions.addAll(generalQuestions);
 
         int correct = 0;
         int totalQuestions = questions.size();
 
-        for (GabaritoAzul gabaritoAzul : questions) {
-            Character userAnswer = userAnswers.get(gabaritoAzul.getQuestionNumber());
+        for (GabaritoBase gabaritoBase : questions) {
+            Character userAnswer = userAnswers.get(gabaritoBase.getQuestionNumber());
 
-            if (userAnswer != null && userAnswer.toString().equalsIgnoreCase(gabaritoAzul.getCorrectAnswer().toString())) {
+            if (userAnswer != null && userAnswer.toString().equalsIgnoreCase(gabaritoBase.getCorrectAnswer().toString())) {
                 correct++;
             }
         }
