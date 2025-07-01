@@ -22,7 +22,7 @@ public class ExamCorrectionService {
         return userAnswers.answers().values().toString();
     }
 
-    private static void validateIfAwnserItsPossible(UserAnswers userAnswers) {
+    private void validateIfAwnserItsPossible(UserAnswers userAnswers) {
         for (String answer : userAnswers.answers().values()) {
             if (!isValidAnswer(answer)) {
                 throw new RuntimeException("The answers must be [A,B,C,D,E] only");
@@ -30,7 +30,7 @@ public class ExamCorrectionService {
         }
     }
 
-    private static boolean isValidAnswer(String answer) {
+    private boolean isValidAnswer(String answer) {
         return answer.equalsIgnoreCase("A") ||
                 answer.equalsIgnoreCase("B") ||
                 answer.equalsIgnoreCase("C") ||
