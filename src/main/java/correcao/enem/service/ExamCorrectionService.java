@@ -17,12 +17,12 @@ public class ExamCorrectionService {
         UserAnswers userAnswers = validateJson.validateJsonFromString(data);
         String text = extractorPdf.extractContentFromPdf(file);
 
-        validateIfAwnserItsPossible(userAnswers);
+        validateIfAnswerItsPossible(userAnswers);
 
         return userAnswers.answers().values().toString();
     }
 
-    private void validateIfAwnserItsPossible(UserAnswers userAnswers) {
+    private void validateIfAnswerItsPossible(UserAnswers userAnswers) {
         for (String answer : userAnswers.answers().values()) {
             if (!isValidAnswer(answer)) {
                 throw new RuntimeException("The answers must be [A,B,C,D,E] only");
