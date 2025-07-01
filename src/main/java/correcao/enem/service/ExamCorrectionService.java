@@ -17,6 +17,24 @@ public class ExamCorrectionService {
         UserAnswers userAnswers = validateJson.validateJsonFromString(data);
         String text = extractorPdf.extractContentFromPdf(file);
 
+        validateIfAwnserItsPossible(userAnswers);
+
         return userAnswers.answers().values().toString();
+    }
+
+    private static void validateIfAwnserItsPossible(UserAnswers userAnswers) {
+        for (String answer : userAnswers.answers().values()) {
+            if (!isValidAnswer(answer)) {
+                throw new RuntimeException("The answers must be [A,B,C,D,E] only");
+            }
+        }
+    }
+
+    private static boolean isValidAnswer(String answer) {
+        return answer.equalsIgnoreCase("A") ||
+                answer.equalsIgnoreCase("B") ||
+                answer.equalsIgnoreCase("C") ||
+                answer.equalsIgnoreCase("D") ||
+                answer.equalsIgnoreCase("E");
     }
 }
