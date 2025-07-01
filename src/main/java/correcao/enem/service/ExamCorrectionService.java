@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
-public class GabaritoService {
+public class ExamCorrectionService {
     private final ExtractorPdf extractorPdf;
     private final ValidateJson validateJson;
 
