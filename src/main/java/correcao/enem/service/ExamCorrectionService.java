@@ -2,7 +2,6 @@ package correcao.enem.service;
 
 import correcao.enem.dto.UserAnswers;
 import correcao.enem.utils.ExtractorPdf;
-import correcao.enem.utils.ValidateJson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,32 +13,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ExamCorrectionService {
     private final ExtractorPdf extractorPdf;
-    private final ValidateJson validateJson;
 
-    public String correctExam(MultipartFile file, String data) {
-        UserAnswers userAnswers = validateJson.validateJsonFromString(data);
-        validateIfAnswerItsPossible(userAnswers);
-
+    public String correctExam(MultipartFile file, UserAnswers data) {
         String text = extractorPdf.extractContentFromPdf(file);
         Map<Integer, String> gabarito = extractAnswersFromText(text);
 
-        return text;
-    }
+        validateAnswerValues(data.answers());
 
-    private void validateIfAnswerItsPossible(UserAnswers userAnswers) {
-        for (String answer : userAnswers.answers().values()) {
-            if (!isValidAnswer(answer)) {
-                throw new RuntimeException("The answers must be [A,B,C,D,E] only");
-            }
-        }
-    }
-
-    private boolean isValidAnswer(String answer) {
-        return answer.equalsIgnoreCase("A") ||
-                answer.equalsIgnoreCase("B") ||
-                answer.equalsIgnoreCase("C") ||
-                answer.equalsIgnoreCase("D") ||
-                answer.equalsIgnoreCase("E");
+        return data.answers().toString();
     }
 
     private Map<Integer, String> extractAnswersFromText(String text) {
@@ -64,4 +45,12 @@ public class ExamCorrectionService {
         return answers;
     }
 
+    private void validateAnswerValues(Map<Integer, String> answers) {
+        for (Map.Entry<Integer, String> entry : answers.entrySet()) {
+            String value = entry.getValue();
+            if (!value.matches("(?i)[a-e]")) {
+                throw new IllegalArgumentException("Resposta inválida na questão " + entry.getKey() + ": " + value);
+            }
+        }
+    }
 }
