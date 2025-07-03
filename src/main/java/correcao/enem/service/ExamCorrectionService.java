@@ -29,7 +29,7 @@ public class ExamCorrectionService {
         int totalCanceled = countCanceledQuestions(gabarito);
         int totalQuestions = gabarito.size() - totalCanceled;
         Map<Integer, String> wrongAnswers = new LinkedHashMap<>();
-        Map<Integer, String> correctAnswers = new LinkedHashMap<>();
+        Map<Integer, String> correctedAnswers = new LinkedHashMap<>();
 
         for (Map.Entry<Integer, String> entry : userAnswers.entrySet()) {
             Integer number = entry.getKey();
@@ -48,7 +48,7 @@ public class ExamCorrectionService {
             } else {
                 wrongCount++;
                 wrongAnswers.put(number, userAnswer);
-                correctAnswers.put(number, gabarito.get(number));
+                correctedAnswers.put(number, gabarito.get(number));
             }
         }
 
@@ -58,7 +58,7 @@ public class ExamCorrectionService {
                 .totalQuestions(totalQuestions)
                 .totalCanceled(totalCanceled)
                 .wrongAnswers(wrongAnswers)
-                .correctAnswers(correctAnswers)
+                .correctedAnswers(correctedAnswers)
                 .build();
     }
 
