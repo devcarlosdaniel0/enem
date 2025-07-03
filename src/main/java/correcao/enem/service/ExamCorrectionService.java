@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -28,6 +29,8 @@ public class ExamCorrectionService {
         int wrongCount = 0;
         int totalCanceled = countCanceledQuestions(gabarito);
         int totalQuestions = gabarito.size() - totalCanceled;
+        Map<Integer, String> wrongAnswers = new LinkedHashMap<>();
+        Map<Integer, String> correctAnswers = new LinkedHashMap<>();
 
         for (Map.Entry<Integer, String> entry : userAnswers.entrySet()) {
             Integer number = entry.getKey();
@@ -45,6 +48,8 @@ public class ExamCorrectionService {
                 correctCount++;
             } else {
                 wrongCount++;
+                wrongAnswers.put(number, userAnswer);
+                correctAnswers.put(number, gabarito.get(number));
             }
         }
 
@@ -53,6 +58,8 @@ public class ExamCorrectionService {
                 .wrongCount(wrongCount)
                 .totalQuestions(totalQuestions)
                 .totalCanceled(totalCanceled)
+                .wrongAnswers(wrongAnswers)
+                .correctAnswers(correctAnswers)
                 .build();
     }
 

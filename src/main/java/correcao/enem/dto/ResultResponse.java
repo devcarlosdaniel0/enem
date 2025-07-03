@@ -8,8 +8,8 @@ import java.util.Map;
 public record ResultResponse(Integer correctCount,
                              Integer wrongCount,
                              Integer totalQuestions,
-                             Integer totalCanceled
-//                             Map<Integer, String> wrongAnswers,
-//                             Map<Integer, String> correctAnswers
+                             Integer totalCanceled,
+                             Map<Integer, String> wrongAnswers,
+                             Map<Integer, String> correctAnswers
                              ) {
 }
