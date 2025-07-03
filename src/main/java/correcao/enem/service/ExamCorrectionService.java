@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -37,7 +36,7 @@ public class ExamCorrectionService {
             String userAnswer = entry.getValue();
 
             if (gabarito.get(number) == null) {
-                continue;
+                throw new RuntimeException("The question with that number could not be found: " + entry);
             }
 
             if (gabarito.get(number).equalsIgnoreCase("Anulado")) {
