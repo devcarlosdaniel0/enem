@@ -1,6 +1,7 @@
 package correcao.enem.controller;
 
-import correcao.enem.dto.UserAnswers;
+import correcao.enem.dto.ResultResponse;
+import correcao.enem.dto.UserAnswersRequest;
 import correcao.enem.service.ExamCorrectionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -19,11 +20,11 @@ public class ExamCorrectionController {
     private final ExamCorrectionService examCorrectionService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> extract(
+    public ResponseEntity<ResultResponse> extract(
             @RequestPart("file") MultipartFile filePath,
-            @RequestPart("data") UserAnswers data) {
+            @RequestPart("userAnswers") UserAnswersRequest userAnswersRequest) {
 
-        return ResponseEntity.ok(examCorrectionService.correctExam(filePath, data));
+        return ResponseEntity.ok(examCorrectionService.correctExam(filePath, userAnswersRequest));
     }
 
 }
