@@ -20,6 +20,8 @@ public class ExamCorrectionService {
         Map<Integer, String> gabarito = extractCorrectAnswersFromText(text);
 
         Map<Integer, String> userAnswers = userAnswersRequest.answers();
+        userAnswers.replaceAll((key, value) -> value.trim().toUpperCase());
+
         validateUserAnswerValues(userAnswers);
 
         int correctCount = 0;
