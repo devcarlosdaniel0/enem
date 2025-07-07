@@ -18,7 +18,7 @@ public class ExamExceptionHandler {
             InvalidAnswerRequest e) {
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        problemDetail.setTitle("Your answers in request must be only [A,B,C,D,E].");
+        problemDetail.setTitle("Your answers in request must be [A,B,C,D,E] only.");
         problemDetail.setProperty("timeStamp", timeFormatted());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);

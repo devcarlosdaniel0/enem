@@ -11,11 +11,16 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
 public class ExamCorrectionService {
     private final ExtractorPdf extractorPdf;
+
+    private static final String CANCELED_ANSWER = "Anulado";
+    private static final Pattern EXAM_CORRECT_ANSWERS_PATTERN = Pattern.compile("(?i)^\\d+\\s+(A|B|C|D|E|Anulado)$");
+    private static final Pattern VALID_ANSWERS_PATTERN = Pattern.compile("(?i)[a-e]");
 
     public ResultResponse correctExam(MultipartFile file, UserAnswersRequest userAnswersRequest) {
         String text = extractorPdf.extractContentFromPdf(file);
@@ -37,10 +42,10 @@ public class ExamCorrectionService {
             String userAnswer = entry.getValue();
 
             if (gabarito.get(number) == null) {
-                throw new QuestionNumberNotFoundException("The question with that number could not be found: " + entry);
+                throw new QuestionNumberNotFoundException(String.format("The question with that number could not be found: %s", entry));
             }
 
-            if (gabarito.get(number).equalsIgnoreCase("Anulado")) {
+            if (gabarito.get(number).equalsIgnoreCase(CANCELED_ANSWER)) {
                 continue;
             }
 
@@ -79,8 +84,7 @@ public class ExamCorrectionService {
 
         for (String line : lines) {
             line = line.trim();
-            // Regex to capture: (ignore case) number + space + letters (A,B,C,D,E or Anulado)
-            if (line.matches("(?i)^\\d+\\s+(A|B|C|D|E|Anulado)$")) {
+            if (EXAM_CORRECT_ANSWERS_PATTERN.matcher(line).matches()) {
                 String[] parts = line.split("\\s+");
 
                 int questionNumber = Integer.parseInt(parts[0]);
@@ -94,9 +98,8 @@ public class ExamCorrectionService {
     private void validateUserAnswerValues(Map<Integer, String> answers) {
         for (Map.Entry<Integer, String> entry : answers.entrySet()) {
             String value = entry.getValue();
-            // Regex to capture: (ignore case) letters (A,B,C,D or E)
-            if (!value.matches("(?i)[a-e]")) {
-                throw new InvalidAnswerRequest("Invalid answer in request. Question " + entry.getKey() + ": " + value);
+            if (!VALID_ANSWERS_PATTERN.matcher(value).matches()) {
+                throw new InvalidAnswerRequest(String.format("Invalid answer in request. Question %d: %s", entry.getKey(), value));
             }
         }
     }
@@ -104,7 +107,7 @@ public class ExamCorrectionService {
     private int countCanceledQuestions(Map<Integer, String> gabarito) {
         int count = 0;
         for (String answer : gabarito.values()) {
-            if (answer.equalsIgnoreCase("Anulado")) {
+            if (answer.equalsIgnoreCase(CANCELED_ANSWER)) {
                 count++;
             }
         }
