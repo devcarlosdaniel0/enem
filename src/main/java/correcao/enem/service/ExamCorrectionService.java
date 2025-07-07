@@ -21,8 +21,7 @@ public class ExamCorrectionService {
         String text = extractorPdf.extractContentFromPdf(file);
         Map<Integer, String> gabarito = extractCorrectAnswersFromText(text);
 
-        Map<Integer, String> userAnswers = userAnswersRequest.answers();
-        userAnswers.replaceAll((key, value) -> value.trim().toUpperCase());
+        Map<Integer, String> userAnswers = getUserAnswersMapAndTransformToUpperCase(userAnswersRequest);
 
         validateUserAnswerValues(userAnswers);
 
@@ -55,6 +54,12 @@ public class ExamCorrectionService {
         }
 
         return buildResultResponse(correctCount, wrongCount, totalQuestions, totalCanceled, wrongAnswers, correctedAnswers);
+    }
+
+    private Map<Integer, String> getUserAnswersMapAndTransformToUpperCase(UserAnswersRequest userAnswersRequest) {
+        Map<Integer, String> userAnswers = userAnswersRequest.answers();
+        userAnswers.replaceAll((key, value) -> value.trim().toUpperCase());
+        return userAnswers;
     }
 
     private ResultResponse buildResultResponse(int correctCount, int wrongCount, int totalQuestions, int totalCanceled, Map<Integer, String> wrongAnswers, Map<Integer, String> correctedAnswers) {
