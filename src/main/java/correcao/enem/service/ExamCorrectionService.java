@@ -54,6 +54,15 @@ public class ExamCorrectionService {
             }
         }
 
+        return buildResultResponse(correctCount,
+                wrongCount,
+                totalQuestions,
+                totalCanceled,
+                wrongAnswers,
+                correctedAnswers);
+    }
+
+    private ResultResponse buildResultResponse(int correctCount, int wrongCount, int totalQuestions, int totalCanceled, Map<Integer, String> wrongAnswers, Map<Integer, String> correctedAnswers) {
         return ResultResponse.builder()
                 .correctCount(correctCount)
                 .wrongCount(wrongCount)
