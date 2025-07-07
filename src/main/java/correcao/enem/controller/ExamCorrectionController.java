@@ -3,6 +3,7 @@ package correcao.enem.controller;
 import correcao.enem.dto.ResultResponse;
 import correcao.enem.dto.UserAnswersRequest;
 import correcao.enem.service.ExamCorrectionService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class ExamCorrectionController {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> correctExam(
             @RequestPart("file") MultipartFile filePath,
-            @RequestPart("userAnswers") UserAnswersRequest userAnswersRequest) {
+            @RequestPart("userAnswers") @Valid UserAnswersRequest userAnswersRequest) {
 
         return ResponseEntity.ok(examCorrectionService.correctExam(filePath, userAnswersRequest));
     }
