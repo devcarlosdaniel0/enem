@@ -2,6 +2,8 @@ package correcao.enem.service;
 
 import correcao.enem.dto.ResultResponse;
 import correcao.enem.dto.UserAnswersRequest;
+import correcao.enem.exceptions.InvalidAnswerRequest;
+import correcao.enem.exceptions.QuestionNumberNotFoundException;
 import correcao.enem.utils.ExtractorPdf;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,7 @@ public class ExamCorrectionService {
             String userAnswer = entry.getValue();
 
             if (gabarito.get(number) == null) {
-                throw new RuntimeException("The question with that number could not be found: " + entry);
+                throw new QuestionNumberNotFoundException("The question with that number could not be found: " + entry);
             }
 
             if (gabarito.get(number).equalsIgnoreCase("Anulado")) {
@@ -85,7 +87,7 @@ public class ExamCorrectionService {
             String value = entry.getValue();
             // Regex to capture: (ignore case) letters (A,B,C,D or E)
             if (!value.matches("(?i)[a-e]")) {
-                throw new IllegalArgumentException("Invalid answer in question " + entry.getKey() + ": " + value);
+                throw new InvalidAnswerRequest("Invalid answer in request. Question " + entry.getKey() + ": " + value);
             }
         }
     }

@@ -13,14 +13,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequestMapping("/api/v1/extract")
+@RequestMapping("/api/v1/correct-exam")
 @RequiredArgsConstructor
 public class ExamCorrectionController {
 
     private final ExamCorrectionService examCorrectionService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<ResultResponse> extract(
+    public ResponseEntity<ResultResponse> correctExam(
             @RequestPart("file") MultipartFile filePath,
             @RequestPart("userAnswers") UserAnswersRequest userAnswersRequest) {
 
