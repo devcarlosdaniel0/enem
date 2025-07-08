@@ -1,9 +1,9 @@
-package correcao.enem.utils;
+package correcao.enem.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 @Slf4j
-@Component
+@Service
 public class ExtractorPdf {
     private static final Pattern EXAM_CORRECT_ANSWERS_PATTERN = Pattern.compile("(?i)^\\d+\\s+(A|B|C|D|E|Anulado)$");
 
