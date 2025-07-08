@@ -1,6 +1,5 @@
 package correcao.enem.handler;
 
-import correcao.enem.exceptions.InvalidAnswerRequest;
 import correcao.enem.exceptions.QuestionNumberNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -14,16 +13,6 @@ import java.time.format.DateTimeFormatter;
 
 @ControllerAdvice
 public class ExamExceptionHandler {
-    @ExceptionHandler(InvalidAnswerRequest.class)
-    public ResponseEntity<ProblemDetail> handlerInvalidAnswerRequest(
-            InvalidAnswerRequest e) {
-
-        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
-        problemDetail.setTitle("Your answers in request must be [A,B,C,D,E] only.");
-        problemDetail.setProperty("timeStamp", timeFormatted());
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
-    }
 
     @ExceptionHandler(QuestionNumberNotFoundException.class)
     public ResponseEntity<ProblemDetail> handlerQuestionNumberNotFoundException(
