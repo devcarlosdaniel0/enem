@@ -14,7 +14,8 @@ import java.util.regex.Pattern;
 @Slf4j
 @Service
 public class ExtractorPdf {
-    private static final Pattern EXAM_CORRECT_ANSWERS_PATTERN = Pattern.compile("(?i)^\\d+\\s+(A|B|C|D|E|Anulado)$");
+    private static final Pattern EXAM_CORRECT_ANSWERS_PATTERN =
+            Pattern.compile("(?i)^\\d+\\s+(A|B|C|D|E|Anulado)\\b.*$");
 
     public String extractContentFromPdf(MultipartFile multipartFile) {
         try (PDDocument document = PDDocument.load(multipartFile.getInputStream())) {
