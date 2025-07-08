@@ -9,7 +9,7 @@ public record UserAnswersRequest(Map<@NotNull @Max(value = 180) @Min(value = 1) 
 
     public UserAnswersRequest {
         if (answers != null) {
-            answers.replaceAll((key, value) -> value != null ? value.trim() : null);
+            answers.replaceAll((key, value) -> value != null ? value.trim().toUpperCase() : null);
         }
     }
 }
