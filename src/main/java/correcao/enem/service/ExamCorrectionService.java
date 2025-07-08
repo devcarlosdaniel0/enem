@@ -3,7 +3,6 @@ package correcao.enem.service;
 import correcao.enem.dto.ResultResponse;
 import correcao.enem.dto.UserAnswersRequest;
 import correcao.enem.exceptions.QuestionNumberNotFoundException;
-import correcao.enem.utils.ExtractorPdf;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,15 +34,17 @@ public class ExamCorrectionService {
             Integer number = entry.getKey();
             String userAnswer = entry.getValue();
 
-            if (gabarito.get(number) == null) {
+            String correctAnswer = gabarito.get(number);
+
+            if (correctAnswer == null) {
                 throw new QuestionNumberNotFoundException(String.format("The question with that number could not be found: %s", entry));
             }
 
-            if (gabarito.get(number).equalsIgnoreCase(CANCELED_ANSWER)) {
+            if (correctAnswer.equalsIgnoreCase(CANCELED_ANSWER)) {
                 continue;
             }
 
-            if (gabarito.get(number).equalsIgnoreCase(userAnswer)) {
+            if (correctAnswer.equalsIgnoreCase(userAnswer)) {
                 correctCount++;
             } else {
                 wrongCount++;
