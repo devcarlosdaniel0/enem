@@ -1,5 +1,6 @@
 package correcao.enem.handler;
 
+import correcao.enem.exceptions.ParsingTextFromPdfException;
 import correcao.enem.exceptions.QuestionNumberNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -23,6 +24,17 @@ public class ExamExceptionHandler {
         problemDetail.setProperty("timeStamp", timeFormatted());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
+    }
+
+    @ExceptionHandler(ParsingTextFromPdfException.class)
+    public ResponseEntity<ProblemDetail> handlerParsingTextFromPdfException(
+            ParsingTextFromPdfException e) {
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        problemDetail.setTitle("An error occurred while trying to parse pdf content.");
+        problemDetail.setProperty("timeStamp", timeFormatted());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problemDetail);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
