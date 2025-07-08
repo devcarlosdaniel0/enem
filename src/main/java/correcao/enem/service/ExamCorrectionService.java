@@ -20,15 +20,12 @@ public class ExamCorrectionService {
 
     private static final String CANCELED_ANSWER = "Anulado";
     private static final Pattern EXAM_CORRECT_ANSWERS_PATTERN = Pattern.compile("(?i)^\\d+\\s+(A|B|C|D|E|Anulado)$");
-    private static final Pattern VALID_ANSWERS_PATTERN = Pattern.compile("(?i)[a-e]");
 
     public ResultResponse correctExam(MultipartFile file, UserAnswersRequest userAnswersRequest) {
         String text = extractorPdf.extractContentFromPdf(file);
         Map<Integer, String> gabarito = extractCorrectAnswersFromText(text);
 
         Map<Integer, String> userAnswers = getUserAnswersMapAndTransformToUpperCase(userAnswersRequest);
-
-        validateUserAnswerValues(userAnswers);
 
         int correctCount = 0;
         int wrongCount = 0;
@@ -93,15 +90,6 @@ public class ExamCorrectionService {
             }
         }
         return answers;
-    }
-
-    private void validateUserAnswerValues(Map<Integer, String> answers) {
-        for (Map.Entry<Integer, String> entry : answers.entrySet()) {
-            String value = entry.getValue();
-            if (!VALID_ANSWERS_PATTERN.matcher(value).matches()) {
-                throw new InvalidAnswerRequest(String.format("Invalid answer in request. Question %d: %s", entry.getKey(), value));
-            }
-        }
     }
 
     private int countCanceledQuestions(Map<Integer, String> gabarito) {
