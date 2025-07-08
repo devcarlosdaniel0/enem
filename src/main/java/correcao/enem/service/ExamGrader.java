@@ -14,10 +14,10 @@ public class ExamGrader {
     public ResultResponse grade(Map<Integer, String> userAnswers, Map<Integer, String> answerKey) {
         int correctCount = 0;
         int wrongCount = 0;
-        int canceledCount = countCanceledQuestions(answerKey);
-        int totalQuestions = answerKey.size() - canceledCount;
+
         Map<Integer, String> wrongAnswers = new LinkedHashMap<>();
         Map<Integer, String> correctedAnswers = new LinkedHashMap<>();
+        Map<Integer, String> cancelledQuestions = new LinkedHashMap<>();
 
         for (Map.Entry<Integer, String> entry : userAnswers.entrySet()) {
             Integer questionNumber = entry.getKey();
@@ -31,6 +31,7 @@ public class ExamGrader {
             }
 
             if (correctAnswer.equalsIgnoreCase(CANCELED_ANSWER)) {
+                cancelledQuestions.put(questionNumber, correctAnswer);
                 continue;
             }
 
@@ -43,10 +44,13 @@ public class ExamGrader {
             }
         }
 
-        return buildResultResponse(correctCount, wrongCount, totalQuestions, canceledCount, wrongAnswers, correctedAnswers);
+        int totalCanceled = cancelledQuestions.size();
+        int totalQuestions = answerKey.size() - totalCanceled;
+
+        return buildResultResponse(correctCount, wrongCount, totalQuestions, totalCanceled, wrongAnswers, correctedAnswers, cancelledQuestions);
     }
 
-    private ResultResponse buildResultResponse(int correctCount, int wrongCount, int totalQuestions, int totalCanceled, Map<Integer, String> wrongAnswers, Map<Integer, String> correctedAnswers) {
+    private ResultResponse buildResultResponse(int correctCount, int wrongCount, int totalQuestions, int totalCanceled, Map<Integer, String> wrongAnswers, Map<Integer, String> correctedAnswers, Map<Integer, String> cancelledQuestions) {
         return ResultResponse.builder()
                 .correctCount(correctCount)
                 .wrongCount(wrongCount)
@@ -54,12 +58,7 @@ public class ExamGrader {
                 .totalCanceled(totalCanceled)
                 .wrongAnswers(wrongAnswers)
                 .correctedAnswers(correctedAnswers)
+                .cancelledQuestions(cancelledQuestions)
                 .build();
-    }
-
-    private int countCanceledQuestions(Map<Integer, String> answerKey) {
-        return (int) answerKey.values().stream()
-                .filter(answer -> answer.equalsIgnoreCase(CANCELED_ANSWER))
-                .count();
     }
 }

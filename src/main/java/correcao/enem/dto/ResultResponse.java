@@ -10,6 +10,7 @@ public record ResultResponse(Integer correctCount,
                              Integer totalQuestions,
                              Integer totalCanceled,
                              Map<Integer, String> wrongAnswers,
-                             Map<Integer, String> correctedAnswers
+                             Map<Integer, String> correctedAnswers,
+                             Map<Integer, String> cancelledQuestions
                              ) {
 }
