@@ -2,7 +2,6 @@ package correcao.enem.service;
 
 import correcao.enem.dto.ResultResponse;
 import correcao.enem.dto.UserAnswersRequest;
-import correcao.enem.exceptions.InvalidAnswerRequest;
 import correcao.enem.exceptions.QuestionNumberNotFoundException;
 import correcao.enem.utils.ExtractorPdf;
 import lombok.RequiredArgsConstructor;
