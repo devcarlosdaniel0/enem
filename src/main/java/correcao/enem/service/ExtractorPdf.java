@@ -1,5 +1,6 @@
 package correcao.enem.service;
 
+import correcao.enem.exceptions.ParsingTextFromPdfException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.text.PDFTextStripper;
@@ -21,7 +22,7 @@ public class ExtractorPdf {
             return pdfStripper.getText(document);
         } catch (Exception ex) {
             log.error("Error parsing PDF", ex);
-            throw new RuntimeException("Error while trying to parse text from PDF");
+            throw new ParsingTextFromPdfException("Error while trying to parse text from PDF");
         }
     }
 
