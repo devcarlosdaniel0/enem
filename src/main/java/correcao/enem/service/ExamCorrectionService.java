@@ -10,7 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -18,11 +17,10 @@ public class ExamCorrectionService {
     private final ExtractorPdf extractorPdf;
 
     private static final String CANCELED_ANSWER = "Anulado";
-    private static final Pattern EXAM_CORRECT_ANSWERS_PATTERN = Pattern.compile("(?i)^\\d+\\s+(A|B|C|D|E|Anulado)$");
 
     public ResultResponse correctExam(MultipartFile file, UserAnswersRequest userAnswersRequest) {
         String text = extractorPdf.extractContentFromPdf(file);
-        Map<Integer, String> gabarito = extractCorrectAnswersFromText(text);
+        Map<Integer, String> gabarito = extractorPdf.extractCorrectAnswersFromPdfText(text);
 
         Map<Integer, String> userAnswers = userAnswersRequest.answers();
 
@@ -66,23 +64,6 @@ public class ExamCorrectionService {
                 .wrongAnswers(wrongAnswers)
                 .correctedAnswers(correctedAnswers)
                 .build();
-    }
-
-    private Map<Integer, String> extractCorrectAnswersFromText(String text) {
-        Map<Integer, String> answers = new LinkedHashMap<>();
-        String[] lines = text.split("\\r?\\n");
-
-        for (String line : lines) {
-            line = line.trim();
-            if (EXAM_CORRECT_ANSWERS_PATTERN.matcher(line).matches()) {
-                String[] parts = line.split("\\s+");
-
-                int questionNumber = Integer.parseInt(parts[0]);
-                String answer = parts[1];
-                answers.put(questionNumber, answer);
-            }
-        }
-        return answers;
     }
 
     private int countCanceledQuestions(Map<Integer, String> gabarito) {
