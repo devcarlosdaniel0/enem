@@ -28,7 +28,7 @@ public class ExtractorPdf {
     }
 
     public Map<Integer, String> extractCorrectAnswersFromPdfText(String text) {
-        Map<Integer, String> answers = new LinkedHashMap<>();
+        Map<Integer, String> answerKey = new LinkedHashMap<>();
         String[] lines = text.split("\\r?\\n");
 
         for (String line : lines) {
@@ -38,9 +38,9 @@ public class ExtractorPdf {
 
                 int questionNumber = Integer.parseInt(parts[0]);
                 String answer = parts[1];
-                answers.put(questionNumber, answer);
+                answerKey.put(questionNumber, answer);
             }
         }
-        return answers;
+        return answerKey;
     }
 }
