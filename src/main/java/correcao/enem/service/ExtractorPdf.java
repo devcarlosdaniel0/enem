@@ -39,7 +39,8 @@ public class ExtractorPdf {
                         parts -> Integer.parseInt(parts[0]),
                         parts -> (parts.length == 3 &&
                                 LanguageOption.ESPANHOL.equals(language) &&
-                                Integer.parseInt(parts[0]) <= 5
+                                Integer.parseInt(parts[0]) <= 5 &&
+                                parts[2].matches("(?i)([a-e]|Anulado)")
                                 ? parts[2]
                                 : parts[1]),
                         (a, b) -> b,
