@@ -31,7 +31,7 @@ public class ExtractorPdf {
     }
 
     public Map<Integer, String> extractCorrectAnswersFromPdfText(String text, LanguageOption language) {
-        LinkedHashMap<Integer, String> answerKey = Arrays.stream(text.split("\\r?\\n"))
+        return Arrays.stream(text.split("\\r?\\n"))
                 .map(String::trim)
                 .filter(line -> EXAM_CORRECT_ANSWERS_PATTERN.matcher(line).matches())
                 .map(line -> line.split("\\s+"))
@@ -45,7 +45,5 @@ public class ExtractorPdf {
                         (a, b) -> b,
                         LinkedHashMap::new
                 ));
-
-        return answerKey;
     }
 }
