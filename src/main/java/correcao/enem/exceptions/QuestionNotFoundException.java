@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class QuestionNumberNotFoundException extends RuntimeException {
-    public QuestionNumberNotFoundException(String message) {
+public class QuestionNotFoundException extends RuntimeException {
+    public QuestionNotFoundException(String message) {
         super(message);
     }
 }

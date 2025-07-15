@@ -1,7 +1,7 @@
 package correcao.enem.service;
 
 import correcao.enem.dto.ResultResponse;
-import correcao.enem.exceptions.QuestionNumberNotFoundException;
+import correcao.enem.exceptions.QuestionNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -26,7 +26,7 @@ public class ExamGrader {
             String correctAnswer = answerKey.get(questionNumber);
 
             if (correctAnswer == null) {
-                throw new QuestionNumberNotFoundException(
+                throw new QuestionNotFoundException(
                         String.format("The question with that number could not be found: %s", entry));
             }
 

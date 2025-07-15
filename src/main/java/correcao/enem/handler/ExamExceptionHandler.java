@@ -1,7 +1,7 @@
 package correcao.enem.handler;
 
 import correcao.enem.exceptions.ParsingTextFromPdfException;
-import correcao.enem.exceptions.QuestionNumberNotFoundException;
+import correcao.enem.exceptions.QuestionNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +15,9 @@ import java.time.format.DateTimeFormatter;
 @ControllerAdvice
 public class ExamExceptionHandler {
 
-    @ExceptionHandler(QuestionNumberNotFoundException.class)
-    public ResponseEntity<ProblemDetail> handlerQuestionNumberNotFoundException(
-            QuestionNumberNotFoundException e) {
+    @ExceptionHandler(QuestionNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handlerQuestionNotFoundException(
+            QuestionNotFoundException e) {
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
         problemDetail.setTitle("That question could not be found.");
