@@ -46,8 +46,9 @@ public class ExamGrader {
 
         int totalCanceled = cancelledQuestions.size();
         int totalQuestions = answerKey.size() - totalCanceled;
+        int totalAnswered = userAnswers.size();
 
-        return buildResultResponse(correctCount, wrongCount, totalQuestions, totalCanceled, wrongAnswers, expectedAnswers, cancelledQuestions);
+        return buildResultResponse(correctCount, wrongCount, totalAnswered, totalQuestions, totalCanceled, wrongAnswers, expectedAnswers, cancelledQuestions);
     }
 
     private boolean isCanceled(String correctAnswer) {
@@ -58,10 +59,11 @@ public class ExamGrader {
         return userAnswer.equalsIgnoreCase(correctAnswer);
     }
 
-    private ResultResponse buildResultResponse(int correctCount, int wrongCount, int totalQuestions, int totalCanceled, Map<Integer, String> wrongAnswers, Map<Integer, String> expectedAnswers, Map<Integer, String> cancelledQuestions) {
+    private ResultResponse buildResultResponse(int correctCount, int wrongCount, int totalAnswered, int totalQuestions, int totalCanceled, Map<Integer, String> wrongAnswers, Map<Integer, String> expectedAnswers, Map<Integer, String> cancelledQuestions) {
         return ResultResponse.builder()
                 .correctCount(correctCount)
                 .wrongCount(wrongCount)
+                .totalAnswered(totalAnswered)
                 .totalQuestions(totalQuestions)
                 .totalCanceled(totalCanceled)
                 .wrongAnswers(wrongAnswers)
