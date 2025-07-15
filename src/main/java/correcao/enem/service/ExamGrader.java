@@ -16,7 +16,7 @@ public class ExamGrader {
         int wrongCount = 0;
 
         Map<Integer, String> wrongAnswers = new LinkedHashMap<>();
-        Map<Integer, String> correctedAnswers = new LinkedHashMap<>();
+        Map<Integer, String> expectedAnswers = new LinkedHashMap<>();
         Map<Integer, String> cancelledQuestions = new LinkedHashMap<>();
 
         for (Map.Entry<Integer, String> entry : userAnswers.entrySet()) {
@@ -30,34 +30,42 @@ public class ExamGrader {
                         String.format("The question with that number could not be found: %s", entry));
             }
 
-            if (correctAnswer.equalsIgnoreCase(CANCELED_ANSWER)) {
+            if (isCanceled(correctAnswer)) {
                 cancelledQuestions.put(questionNumber, correctAnswer);
                 continue;
             }
 
-            if (correctAnswer.equalsIgnoreCase(userAnswer)) {
+            if (isCorrect(userAnswer, correctAnswer)) {
                 correctCount++;
             } else {
                 wrongCount++;
                 wrongAnswers.put(questionNumber, userAnswer);
-                correctedAnswers.put(questionNumber, correctAnswer);
+                expectedAnswers.put(questionNumber, correctAnswer);
             }
         }
 
         int totalCanceled = cancelledQuestions.size();
         int totalQuestions = answerKey.size() - totalCanceled;
 
-        return buildResultResponse(correctCount, wrongCount, totalQuestions, totalCanceled, wrongAnswers, correctedAnswers, cancelledQuestions);
+        return buildResultResponse(correctCount, wrongCount, totalQuestions, totalCanceled, wrongAnswers, expectedAnswers, cancelledQuestions);
     }
 
-    private ResultResponse buildResultResponse(int correctCount, int wrongCount, int totalQuestions, int totalCanceled, Map<Integer, String> wrongAnswers, Map<Integer, String> correctedAnswers, Map<Integer, String> cancelledQuestions) {
+    private boolean isCanceled(String correctAnswer) {
+        return correctAnswer.equalsIgnoreCase(CANCELED_ANSWER);
+    }
+
+    private boolean isCorrect(String userAnswer, String correctAnswer) {
+        return userAnswer.equalsIgnoreCase(correctAnswer);
+    }
+
+    private ResultResponse buildResultResponse(int correctCount, int wrongCount, int totalQuestions, int totalCanceled, Map<Integer, String> wrongAnswers, Map<Integer, String> expectedAnswers, Map<Integer, String> cancelledQuestions) {
         return ResultResponse.builder()
                 .correctCount(correctCount)
                 .wrongCount(wrongCount)
                 .totalQuestions(totalQuestions)
                 .totalCanceled(totalCanceled)
                 .wrongAnswers(wrongAnswers)
-                .correctedAnswers(correctedAnswers)
+                .expectedAnswers(expectedAnswers)
                 .cancelledQuestions(cancelledQuestions)
                 .build();
     }
