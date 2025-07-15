@@ -16,7 +16,7 @@ public class ExamCorrectionService {
 
     public ResultResponse correctExam(MultipartFile file, UserAnswersRequest userAnswersRequest) {
         String text = extractorPdf.extractContentFromPdf(file);
-        Map<Integer, String> answerKey = extractorPdf.extractCorrectAnswersFromPdfText(text);
+        Map<Integer, String> answerKey = extractorPdf.extractCorrectAnswersFromPdfText(text, userAnswersRequest.languageOption());
 
         Map<Integer, String> userAnswers = userAnswersRequest.answers();
 
