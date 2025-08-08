@@ -17,8 +17,9 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ExtractorPdf {
-    private static final Pattern EXAM_CORRECT_ANSWERS_PATTERN =
-            Pattern.compile("(?i)^\\d+\\s+([a-e]|Anulado)(\\s+([a-e]|Anulado))?(\\s+.*)?$");
+    private static final Pattern EXAM_LINE_PATTERN_DIGIT_AND_ANSWER = Pattern.compile("^\\d+\\s.*$");
+    private static final Pattern EXAM_LINE_PATTERN_ONE_DIGIT_ONLY = Pattern.compile("^\\d+$");
+    private static final String CANCELED_ANSWER = "Anulado";
 
     public String extractContentFromPdf(MultipartFile multipartFile) {
         try (PDDocument document = PDDocument.load(multipartFile.getInputStream())) {
@@ -33,16 +34,24 @@ public class ExtractorPdf {
     public Map<Integer, String> extractCorrectAnswersFromPdfText(String text, LanguageOption language) {
         return Arrays.stream(text.split("\\r?\\n"))
                 .map(String::trim)
-                .filter(line -> EXAM_CORRECT_ANSWERS_PATTERN.matcher(line).matches())
-                .map(line -> line.split("\\s+"))
+                .filter(line -> !line.isEmpty())
+                .filter(line -> EXAM_LINE_PATTERN_DIGIT_AND_ANSWER.matcher(line).matches() || EXAM_LINE_PATTERN_ONE_DIGIT_ONLY.matcher(line).matches())
                 .collect(Collectors.toMap(
-                        parts -> Integer.parseInt(parts[0]),
-                        parts -> (parts.length == 3 &&
-                                LanguageOption.ESPANHOL.equals(language) &&
-                                Integer.parseInt(parts[0]) <= 5 &&
-                                parts[2].matches("(?i)([a-e]|Anulado)")
-                                ? parts[2]
-                                : parts[1]),
+                        line -> Integer.parseInt(line.replaceAll(" .*$", "")),
+                        line -> {
+                            String[] parts = line.split("\\s+");
+                            if (parts.length == 1) {
+                                return CANCELED_ANSWER;
+                            } else if (parts.length == 2) {
+                                return parts[1];
+                            } else if (parts.length == 3) {
+                                if (LanguageOption.ESPANHOL.equals(language) && Integer.parseInt(parts[0]) <= 5) {
+                                    return parts[2];
+                                }
+                                return parts[1];
+                            }
+                            return "Invalid";
+                        },
                         (a, b) -> b,
                         LinkedHashMap::new
                 ));
