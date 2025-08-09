@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ExamGrader {
@@ -17,7 +18,7 @@ public class ExamGrader {
 
         Map<Integer, String> wrongAnswers = new LinkedHashMap<>();
         Map<Integer, String> expectedAnswers = new LinkedHashMap<>();
-        Map<Integer, String> cancelledQuestions = new LinkedHashMap<>();
+        Map<Integer, String> cancelledQuestions = findCancelled(answerKey);
 
         for (Map.Entry<Integer, String> entry : userAnswers.entrySet()) {
             Integer questionNumber = entry.getKey();
@@ -31,7 +32,6 @@ public class ExamGrader {
             }
 
             if (isCanceled(correctAnswer)) {
-                cancelledQuestions.put(questionNumber, correctAnswer);
                 continue;
             }
 
@@ -49,6 +49,17 @@ public class ExamGrader {
         int totalAnswered = userAnswers.size();
 
         return buildResultResponse(correctCount, wrongCount, totalAnswered, totalQuestions, totalCanceled, wrongAnswers, expectedAnswers, cancelledQuestions);
+    }
+
+    private LinkedHashMap<Integer, String> findCancelled(Map<Integer, String> answerKey) {
+        return answerKey.entrySet().stream()
+                .filter(entry -> entry.getValue().toUpperCase().startsWith(CANCELED_ANSWER))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (a, b) -> b,
+                        LinkedHashMap::new
+                ));
     }
 
     private boolean isCanceled(String correctAnswer) {
