@@ -31,7 +31,7 @@ public class ExtractorPdf {
         }
     }
 
-    public Map<Integer, String> extractCorrectAnswersFromPdfText(String text, LanguageOption language) {
+    public Map<Integer, String> extractCorrectAnswersFromPdfText(String text, LanguageOption languageOption) {
         return Arrays.stream(text.split("\\r?\\n"))
                 .map(String::trim)
                 .filter(line -> !line.isEmpty())
@@ -45,7 +45,7 @@ public class ExtractorPdf {
                             } else if (parts.length == 2) {
                                 return parts[1];
                             } else if (parts.length == 3) {
-                                if (LanguageOption.ESPANHOL.equals(language) && Integer.parseInt(parts[0]) <= 5) {
+                                if (LanguageOption.ESPANHOL.equals(languageOption) && Integer.parseInt(parts[0]) <= 5) {
                                     return parts[2];
                                 }
                                 return parts[1];

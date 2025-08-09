@@ -9,7 +9,7 @@ import java.util.Map;
 
 @Service
 public class ExamGrader {
-    private static final String CANCELED_ANSWER = "Anulado";
+    private static final String CANCELED_ANSWER = "ANULAD";
 
     public ResultResponse grade(Map<Integer, String> userAnswers, Map<Integer, String> answerKey) {
         int correctCount = 0;
@@ -52,7 +52,7 @@ public class ExamGrader {
     }
 
     private boolean isCanceled(String correctAnswer) {
-        return correctAnswer.equalsIgnoreCase(CANCELED_ANSWER);
+        return correctAnswer.toUpperCase().startsWith(CANCELED_ANSWER);
     }
 
     private boolean isCorrect(String userAnswer, String correctAnswer) {
