@@ -23,8 +23,8 @@ class ExtractorPdfTest {
     @Nested
     class ExtractCorrectAnswersFromPdfText {
         @Test
-        @DisplayName("Should get the second answer when language option is spanish")
-        void shouldGetTheSecondAnswerWhenLanguageOptionIsSpanish() {
+        @DisplayName("Should get the second answer when language option is spanish in range of 5 questions")
+        void shouldGetTheSecondAnswerWhenLanguageOptionIsSpanishInRangeOf5Questions() {
             // Arrange
             String text = """
                     1 A B
@@ -113,15 +113,13 @@ class ExtractorPdfTest {
 
             LanguageOption spanish = LanguageOption.ESPANHOL;
 
-            Pattern regEx = Pattern.compile("(?i)([a-e]|Anulado)");
-
             // Act
             Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
 
             // Assert
-            assertFalse(regEx.matcher("Portugues").matches());
-            assertFalse(regEx.matcher("CC").matches());
-            assertFalse(regEx.matcher("B123").matches());
+            assertFalse(ExtractorPdf.EXAM_AE.matcher("Portugues").matches());
+            assertFalse(ExtractorPdf.EXAM_AE.matcher("CC").matches());
+            assertFalse(ExtractorPdf.EXAM_AE.matcher("B123").matches());
 
             assertEquals("A", result.get(1));
             assertEquals("B", result.get(2));
@@ -168,6 +166,42 @@ class ExtractorPdfTest {
             assertEquals("A", result.get(1));
             assertEquals("D", result.get(2));
             assertEquals("B", result.get(3));
+        }
+
+        @Test
+        @DisplayName("Should get the first answer option when cancelled")
+        void shouldGetTheFirstAnswerOptionWhenCancelled() {
+            // Arrange
+            String text = """
+                    1 Anulada b
+                    2 anulado c 
+                    3 Anulado portugues
+                    """;
+
+            // Act
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null);
+
+            // Assert
+            assertEquals("Anulada", result.get(1));
+            assertEquals("anulado", result.get(2));
+            assertEquals("Anulado", result.get(3));
+        }
+
+        @Test
+        @DisplayName("Should transforms nulls in cancelled")
+        void shouldTransformsNullsInCancelled() {
+            // Arrange
+            String text = """
+                    1 
+                    2
+                    """;
+
+            // Act
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null);
+
+            // Assert
+            assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(1));
+            assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(2));
         }
     }
 }

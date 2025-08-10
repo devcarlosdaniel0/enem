@@ -70,9 +70,12 @@ class ExamGraderTest {
             );
 
             Map<Integer, String> answerKey = Map.of(
-                    1, "Anulado",
+                    1, "anulada",
                     2, "C",
-                    3, "C"
+                    3, "C",
+                    4, "Anulado",
+                    5, "Anulada",
+                    6, "anulado"
             );
 
             // Act
@@ -83,9 +86,7 @@ class ExamGraderTest {
             assertEquals(1, result.wrongCount());
             assertEquals(3, result.totalAnswered());
             assertEquals(2, result.totalQuestions());
-            assertEquals(1, result.totalCanceled());
-
-            assertEquals("Anulado", result.cancelledQuestions().get(1));
+            assertEquals(4, result.totalCanceled());
         }
 
         @Test
