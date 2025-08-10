@@ -17,9 +17,10 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ExtractorPdf {
-    private static final Pattern EXAM_LINE_PATTERN_DIGIT_AND_ANSWER = Pattern.compile("^\\d+\\s.*$");
+    private static final Pattern EXAM_LINE_PATTERN_DIGIT_AND_ANSWER = Pattern.compile("^\\d+\\s+.*$");
     private static final Pattern EXAM_LINE_PATTERN_ONE_DIGIT_ONLY = Pattern.compile("^\\d+$");
-    private static final String CANCELED_ANSWER = "Anulado";
+    public static final Pattern EXAM_AE = Pattern.compile("(?i)([a-e])");
+    public static final String CANCELED_ANSWER = "Anulado";
 
     public String extractContentFromPdf(MultipartFile multipartFile) {
         try (PDDocument document = PDDocument.load(multipartFile.getInputStream())) {
@@ -40,17 +41,23 @@ public class ExtractorPdf {
                         line -> Integer.parseInt(line.replaceAll(" .*$", "")),
                         line -> {
                             String[] parts = line.split("\\s+");
+
+                            int questionNumber = Integer.parseInt(parts[0]);
+                            String firstOp = parts.length >= 2 ? parts[1] : "";
+                            String secondOp = parts.length >= 3 ? parts[2] : "";
+
                             if (parts.length == 1) {
                                 return CANCELED_ANSWER;
-                            } else if (parts.length == 2) {
-                                return parts[1];
-                            } else if (parts.length == 3) {
-                                if (LanguageOption.ESPANHOL.equals(languageOption) && Integer.parseInt(parts[0]) <= 5) {
-                                    return parts[2];
-                                }
-                                return parts[1];
                             }
-                            return "Invalid";
+
+                            if (parts.length == 3 &&
+                                    LanguageOption.ESPANHOL.equals(languageOption) &&
+                                    questionNumber <= 5 &&
+                                    EXAM_AE.matcher(secondOp).matches())
+                                    return secondOp;
+                            else {
+                                return firstOp;
+                            }
                         },
                         (a, b) -> b,
                         LinkedHashMap::new
