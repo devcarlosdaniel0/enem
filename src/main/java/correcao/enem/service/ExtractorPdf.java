@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,8 @@ public class ExtractorPdf {
     }
 
     public Map<Integer, String> extractCorrectAnswersFromPdfText(String text, LanguageOption languageOption) {
+        boolean isOldYear = checkIfOldYear(text);
+
         return Arrays.stream(text.split("\\r?\\n"))
                 .map(String::trim)
                 .filter(line -> !line.isEmpty())
@@ -52,7 +55,10 @@ public class ExtractorPdf {
 
                             if (parts.length == 3 &&
                                     LanguageOption.ESPANHOL.equals(languageOption) &&
-                                    questionNumber <= 5 &&
+                                    (
+                                            (isOldYear && questionNumber >= 91 && questionNumber <= 95) ||
+                                            (!isOldYear && questionNumber >= 1 && questionNumber <= 5)
+                                    ) &&
                                     EXAM_AE.matcher(secondOp).matches())
                                     return secondOp;
                             else {
@@ -62,5 +68,18 @@ public class ExtractorPdf {
                         (a, b) -> b,
                         LinkedHashMap::new
                 ));
+    }
+
+    private boolean checkIfOldYear(String text) {
+        Pattern pattern = Pattern.compile("\\d{4}");
+        Matcher matcher = pattern.matcher(text);
+
+        if (!matcher.find()) {
+            throw new RuntimeException("Error while finding exam year");
+        }
+
+        int examYear = Integer.parseInt(matcher.group(0));
+
+        return examYear >= 2011 && examYear <= 2016;
     }
 }

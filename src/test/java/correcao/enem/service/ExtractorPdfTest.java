@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ExtractorPdfTest {
@@ -27,6 +29,7 @@ class ExtractorPdfTest {
         void shouldGetTheSecondAnswerWhenLanguageOptionIsSpanishInRangeOf5Questions() {
             // Arrange
             String text = """
+                    ENEM 2024
                     1 A B
                     2 C D
                     3 B A
@@ -54,6 +57,7 @@ class ExtractorPdfTest {
         void shouldGetTheFirstAnswerWhenLanguageOptionIsEnglish() {
             // Arrange
             String text = """
+                    ENEM 2024
                     1 A B
                     2 C D
                     3 B A
@@ -81,6 +85,7 @@ class ExtractorPdfTest {
         void shouldGetTheFirstAnswerEvenIfSpanishWhenQuestionNumberIsGreaterThan5() {
             // Arrange
             String text = """
+                    ENEM 2024
                     5 D E
                     6 A D
                     7 B E
@@ -105,6 +110,7 @@ class ExtractorPdfTest {
         void shouldGetTheFirstAnswerWhenSecondAnswerDoesNotMatchesWithRegEx() {
             // Arrange
             String text = """
+                    ENEM 2024
                     1 A Portugues
                     2 B CC
                     3 C B123
@@ -133,6 +139,7 @@ class ExtractorPdfTest {
         void shouldGetTheFirstAnswerWhenLanguageOptionIsNull() {
             // Arrange
             String text = """
+                    ENEM 2024
                     1 A C
                     2 B D
                     3 C E
@@ -152,6 +159,7 @@ class ExtractorPdfTest {
         void shouldGetTheFirstAnswerWhenThereIsMoreThan2Answers() {
             // Arrange
             String text = """
+                    ENEM 2024
                     1 A B C
                     2 D E A 
                     3 B C D
@@ -173,6 +181,7 @@ class ExtractorPdfTest {
         void shouldGetTheFirstAnswerOptionWhenCancelled() {
             // Arrange
             String text = """
+                    ENEM 2024
                     1 Anulada b
                     2 anulado c 
                     3 Anulado portugues
@@ -192,6 +201,7 @@ class ExtractorPdfTest {
         void shouldTransformsNullsInCancelled() {
             // Arrange
             String text = """
+                    ENEM 2024
                     1 
                     2
                     """;
