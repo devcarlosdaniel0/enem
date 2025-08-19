@@ -1,5 +1,7 @@
 package correcao.enem.handler;
 
+import correcao.enem.exceptions.ExamYearNotFoundException;
+import correcao.enem.exceptions.InvalidYearException;
 import correcao.enem.exceptions.ParsingTextFromPdfException;
 import correcao.enem.exceptions.QuestionNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,28 @@ public class ExamExceptionHandler {
         problemDetail.setProperty("timeStamp", timeFormatted());
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(problemDetail);
+    }
+
+    @ExceptionHandler(ExamYearNotFoundException.class)
+    public ResponseEntity<ProblemDetail> handlerExamYearNotFoundException(
+            ExamYearNotFoundException e) {
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problemDetail.setTitle("Exam year not found in answer key.");
+        problemDetail.setProperty("timeStamp", timeFormatted());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
+    }
+
+    @ExceptionHandler(InvalidYearException.class)
+    public ResponseEntity<ProblemDetail> handlerInvalidYearException(
+            InvalidYearException e) {
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+        problemDetail.setTitle("The year of exam is lower than we correct.");
+        problemDetail.setProperty("timeStamp", timeFormatted());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

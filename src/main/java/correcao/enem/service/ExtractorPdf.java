@@ -1,6 +1,8 @@
 package correcao.enem.service;
 
 import correcao.enem.enums.LanguageOption;
+import correcao.enem.exceptions.ExamYearNotFoundException;
+import correcao.enem.exceptions.InvalidYearException;
 import correcao.enem.exceptions.ParsingTextFromPdfException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -75,13 +77,13 @@ public class ExtractorPdf {
         Matcher matcher = pattern.matcher(text);
 
         if (!matcher.find()) {
-            throw new RuntimeException("Error while finding exam year");
+            throw new ExamYearNotFoundException("Error while finding exam year");
         }
 
         int examYear = Integer.parseInt(matcher.group(0));
 
         if (examYear < 2011) {
-            throw new RuntimeException("The correction of exams goes to 2011 to actual year.");
+            throw new InvalidYearException("The correction of exams goes to 2011 to actual year.");
         }
 
         return examYear >= 2011 && examYear <= 2016;
