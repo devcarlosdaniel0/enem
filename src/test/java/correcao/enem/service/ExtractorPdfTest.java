@@ -11,8 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -25,8 +24,8 @@ class ExtractorPdfTest {
     @Nested
     class ExtractCorrectAnswersFromPdfText {
         @Test
-        @DisplayName("Should get the second answer when language option is spanish in range of 5 questions")
-        void shouldGetTheSecondAnswerWhenLanguageOptionIsSpanishInRangeOf5Questions() {
+        @DisplayName("Should get the second answer when language option is spanish in range of 5 questions when later than 2016")
+        void shouldGetTheSecondAnswerWhenLanguageOptionIsSpanishInRangeOf5QuestionsWhenLaterThan2016() {
             // Arrange
             String text = """
                     ENEM 2024
@@ -50,6 +49,55 @@ class ExtractorPdfTest {
             assertEquals("C", result.get(4));
             assertEquals("E", result.get(5));
             assertEquals("C", result.get(6));
+        }
+
+        @Test
+        @DisplayName("Should get the second answer when language option is spanish in range of 91 to 95 when 2011 to 2016")
+        void shouldGetTheSecondAnswerWhenLanguageOptionIsSpanishInRangeOf91to95When2011to2016() {
+            // Arrange
+            String text = """
+                    ENEM 2011
+                    91 A B
+                    92 C D
+                    93 B A
+                    94 D C
+                    95 A E
+                    96 C
+                    """;
+
+            LanguageOption spanish = LanguageOption.ESPANHOL;
+
+            // Act
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
+
+            // Assert
+            assertEquals("B", result.get(91));
+            assertEquals("D", result.get(92));
+            assertEquals("A", result.get(93));
+            assertEquals("C", result.get(94));
+            assertEquals("E", result.get(95));
+            assertEquals("C", result.get(96));
+        }
+
+        @Test
+        @DisplayName("Should throw exception when exam year is lower than 2011")
+        void shouldThrowExceptionWhenExamYearIsLowerThan2011() {
+            // Arrange
+            String text = """
+                    ENEM 2010
+                    91 A B
+                    92 C D
+                    93 B A
+                    94 D C
+                    95 A E
+                    96 C
+                    """;
+
+            LanguageOption spanish = LanguageOption.ESPANHOL;
+
+            // Act
+            assertThrows(RuntimeException.class, () -> extractorPdf.extractCorrectAnswersFromPdfText(text, spanish));
+
         }
 
         @Test
@@ -81,8 +129,8 @@ class ExtractorPdfTest {
         }
 
         @Test
-        @DisplayName("Should get the first answer even if spanish when question number is greater than 5")
-        void shouldGetTheFirstAnswerEvenIfSpanishWhenQuestionNumberIsGreaterThan5() {
+        @DisplayName("Should get the first answer even if spanish when question number is greater than 5 when later than 2016")
+        void shouldGetTheFirstAnswerEvenIfSpanishWhenQuestionNumberIsGreaterThan5WhenLaterThan2016() {
             // Arrange
             String text = """
                     ENEM 2024
@@ -103,6 +151,31 @@ class ExtractorPdfTest {
             assertEquals("A", result.get(6));
             assertEquals("B", result.get(7));
             assertEquals("C", result.get(8));
+        }
+
+        @Test
+        @DisplayName("Should get the first answer even if spanish when question number is greater than 95 when 2011 to 2016")
+        void shouldGetTheFirstAnswerEvenIfSpanishWhenQuestionNumberIsGreaterThan95When2011To2016() {
+            // Arrange
+            String text = """
+                    ENEM 2013
+                    95 D E
+                    96 A D
+                    97 B E
+                    98 C A
+                    """;
+
+            LanguageOption spanish = LanguageOption.ESPANHOL;
+
+            // Act
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
+
+            // Assert
+            assertEquals("E", result.get(95));
+
+            assertEquals("A", result.get(96));
+            assertEquals("B", result.get(97));
+            assertEquals("C", result.get(98));
         }
 
         @Test
@@ -160,9 +233,9 @@ class ExtractorPdfTest {
             // Arrange
             String text = """
                     ENEM 2024
-                    1 A B C
-                    2 D E A 
-                    3 B C D
+                    1 A B C portugues
+                    2 D E A matematica
+                    3 B C D fisica
                     """;
 
             LanguageOption spanish = LanguageOption.ESPANHOL;

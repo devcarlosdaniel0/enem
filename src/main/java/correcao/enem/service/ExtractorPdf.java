@@ -80,6 +80,10 @@ public class ExtractorPdf {
 
         int examYear = Integer.parseInt(matcher.group(0));
 
+        if (examYear < 2011) {
+            throw new RuntimeException("The correction of exams goes to 2011 to actual year.");
+        }
+
         return examYear >= 2011 && examYear <= 2016;
     }
 }
