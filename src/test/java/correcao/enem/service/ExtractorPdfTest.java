@@ -1,6 +1,8 @@
 package correcao.enem.service;
 
 import correcao.enem.enums.LanguageOption;
+import correcao.enem.exceptions.ExamYearNotFoundException;
+import correcao.enem.exceptions.InvalidYearException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -96,7 +98,27 @@ class ExtractorPdfTest {
             LanguageOption spanish = LanguageOption.ESPANHOL;
 
             // Act
-            assertThrows(RuntimeException.class, () -> extractorPdf.extractCorrectAnswersFromPdfText(text, spanish));
+            assertThrows(InvalidYearException.class, () -> extractorPdf.extractCorrectAnswersFromPdfText(text, spanish));
+
+        }
+
+        @Test
+        @DisplayName("Should throw exception when exam year is not found")
+        void shouldThrowExceptionWhenExamYearIsNotFound() {
+            // Arrange
+            String text = """
+                    91 A B
+                    92 C D
+                    93 B A
+                    94 D C
+                    95 A E
+                    96 C
+                    """;
+
+            LanguageOption english = LanguageOption.INGLES;
+
+            // Act
+            assertThrows(ExamYearNotFoundException.class, () -> extractorPdf.extractCorrectAnswersFromPdfText(text, english));
 
         }
 
