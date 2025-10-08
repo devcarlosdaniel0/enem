@@ -36,7 +36,8 @@ public class ExtractorPdf {
     }
 
     public Map<Integer, String> extractCorrectAnswersFromPdfText(String text, LanguageOption languageOption) {
-        boolean isOldYear = checkIfOldYear(text);
+        int examYear = extractExamYearFromText(text);
+        boolean isOldYear = checkIfOldYear(examYear);
 
         return Arrays.stream(text.split("\\r?\\n"))
                 .map(String::trim)
@@ -72,7 +73,7 @@ public class ExtractorPdf {
                 ));
     }
 
-    private boolean checkIfOldYear(String text) {
+    private int extractExamYearFromText(String text) {
         Pattern pattern = Pattern.compile("\\d{4}");
         Matcher matcher = pattern.matcher(text);
 
@@ -80,8 +81,10 @@ public class ExtractorPdf {
             throw new ExamYearNotFoundException("Error while finding exam year");
         }
 
-        int examYear = Integer.parseInt(matcher.group(0));
+        return Integer.parseInt(matcher.group(0));
+    }
 
+    private boolean checkIfOldYear(int examYear) {
         if (examYear < 2011) {
             throw new InvalidYearException("The correction of exams goes to 2011 to actual year.");
         }
