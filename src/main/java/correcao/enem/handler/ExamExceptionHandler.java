@@ -55,7 +55,7 @@ public class ExamExceptionHandler {
             InvalidYearException e) {
 
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
-        problemDetail.setTitle("The year of exam is lower than we correct.");
+        problemDetail.setTitle("The year of exam is lower than we accept.");
         problemDetail.setProperty("timeStamp", timeFormatted());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(problemDetail);
