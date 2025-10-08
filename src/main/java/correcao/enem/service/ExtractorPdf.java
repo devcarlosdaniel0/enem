@@ -85,10 +85,10 @@ public class ExtractorPdf {
     }
 
     private boolean checkIfOldYear(int examYear) {
-        if (examYear < 2011) {
-            throw new InvalidYearException("The correction of exams goes to 2011 to actual year.");
+        if (examYear < 2015) {
+            throw new InvalidYearException("The correction of exams goes to 2015 to actual year.");
         }
 
-        return examYear >= 2011 && examYear <= 2016;
+        return examYear >= 2015 && examYear <= 2016;
     }
 }

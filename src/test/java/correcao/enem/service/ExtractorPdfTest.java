@@ -54,11 +54,11 @@ class ExtractorPdfTest {
         }
 
         @Test
-        @DisplayName("Should get the second answer when language option is spanish in range of 91 to 95 when 2011 to 2016")
-        void shouldGetTheSecondAnswerWhenLanguageOptionIsSpanishInRangeOf91to95When2011to2016() {
+        @DisplayName("Should get the second answer when language option is spanish in range of 91 to 95 when 2015 to 2016")
+        void shouldGetTheSecondAnswerWhenLanguageOptionIsSpanishInRangeOf91to95When2015to2016() {
             // Arrange
             String text = """
-                    ENEM 2011
+                    ENEM 2015
                     91 A B
                     92 C D
                     93 B A
@@ -82,8 +82,8 @@ class ExtractorPdfTest {
         }
 
         @Test
-        @DisplayName("Should throw exception when exam year is lower than 2011")
-        void shouldThrowExceptionWhenExamYearIsLowerThan2011() {
+        @DisplayName("Should throw exception when exam year is lower than 2015")
+        void shouldThrowExceptionWhenExamYearIsLowerThan2015() {
             // Arrange
             String text = """
                     ENEM 2010
@@ -176,11 +176,11 @@ class ExtractorPdfTest {
         }
 
         @Test
-        @DisplayName("Should get the first answer even if spanish when question number is greater than 95 when 2011 to 2016")
-        void shouldGetTheFirstAnswerEvenIfSpanishWhenQuestionNumberIsGreaterThan95When2011To2016() {
+        @DisplayName("Should get the first answer even if spanish when question number is greater than 95 when 2015 to 2016")
+        void shouldGetTheFirstAnswerEvenIfSpanishWhenQuestionNumberIsGreaterThan95When2015To2016() {
             // Arrange
             String text = """
-                    ENEM 2013
+                    ENEM 2016
                     95 D E
                     96 A D
                     97 B E
