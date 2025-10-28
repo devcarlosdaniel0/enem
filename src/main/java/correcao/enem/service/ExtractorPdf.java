@@ -23,7 +23,7 @@ public class ExtractorPdf {
     private static final Pattern EXAM_LINE_PATTERN_DIGIT_AND_ANSWER = Pattern.compile("^\\d+\\s+.*$");
     private static final Pattern EXAM_LINE_PATTERN_ONE_DIGIT_ONLY = Pattern.compile("^\\d+$");
     public static final Pattern EXAM_AE = Pattern.compile("(?i)([a-e])");
-    private static final Pattern YEAR_PATTERN = Pattern.compile("\\b(20\\d{2})\\b");
+    private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
     public static final String CANCELED_ANSWER = "Anulado";
 
     public String extractContentFromPdf(MultipartFile multipartFile) {
