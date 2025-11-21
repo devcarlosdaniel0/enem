@@ -25,8 +25,6 @@ public class ExamCorrectionController {
             @RequestPart("file") MultipartFile file,
             @RequestPart("userAnswers") @Valid UserAnswersRequest userAnswersRequest) {
 
-        log.info(String.valueOf(userAnswersRequest));
-
         return ResponseEntity.ok(examCorrectionService.correctExam(file, userAnswersRequest));
     }
 

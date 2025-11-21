@@ -13,8 +13,15 @@ import java.util.Map;
 public class ExamCorrectionService {
     private final ExtractorPdf extractorPdf;
     private final ExamGrader examGrader;
+    private final PdfValidator pdfValidator;
 
     public ResultResponse correctExam(MultipartFile file, UserAnswersRequest userAnswersRequest) {
+        boolean isPdf = pdfValidator.validatePDF(file);
+
+        if (!isPdf) {
+            throw new IllegalArgumentException("The file uploaded is not a PDF. Please upload a valid PDF.");
+        }
+
         String text = extractorPdf.extractContentFromPdf(file);
         Map<Integer, String> answerKey = extractorPdf.extractCorrectAnswersFromPdfText(text, userAnswersRequest.languageOption());
 
@@ -22,5 +29,5 @@ public class ExamCorrectionService {
 
         return examGrader.grade(userAnswers, answerKey);
     }
-    
+
 }
