@@ -22,12 +22,12 @@ public class ExamCorrectionController {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<ResultResponse> correctExam(
-            @RequestPart("file") MultipartFile filePath,
+            @RequestPart("file") MultipartFile file,
             @RequestPart("userAnswers") @Valid UserAnswersRequest userAnswersRequest) {
 
         log.info(String.valueOf(userAnswersRequest));
 
-        return ResponseEntity.ok(examCorrectionService.correctExam(filePath, userAnswersRequest));
+        return ResponseEntity.ok(examCorrectionService.correctExam(file, userAnswersRequest));
     }
 
 }
