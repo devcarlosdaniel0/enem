@@ -8,6 +8,7 @@ public enum ErrorCode {
     EXAM_YEAR_NOT_FOUND(HttpStatus.NOT_FOUND, "Exam year not found in answer key."),
     INVALID_EXAM_YEAR(HttpStatus.BAD_REQUEST, "The year of exam is lower than we accept."),
     INVALID_PARAMETERS(HttpStatus.BAD_REQUEST, "Your request parameters did not validate!"),
+    FILE_NOT_PDF(HttpStatus.BAD_REQUEST, "The file uploaded is not a valid PDF."),
     UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error.");
 
     private final HttpStatus status;

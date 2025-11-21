@@ -2,6 +2,7 @@ package correcao.enem.service;
 
 import correcao.enem.dto.ResultResponse;
 import correcao.enem.dto.UserAnswersRequest;
+import correcao.enem.exceptions.FileNotPdfException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +20,7 @@ public class ExamCorrectionService {
         boolean isPdf = pdfValidator.validatePDF(file);
 
         if (!isPdf) {
-            throw new IllegalArgumentException("The file uploaded is not a PDF. Please upload a valid PDF.");
+            throw new FileNotPdfException("The file uploaded is not a PDF. Please upload a valid PDF.");
         }
 
         String text = extractorPdf.extractContentFromPdf(file);
