@@ -11,11 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ExtractorPdfTest {
@@ -218,9 +215,9 @@ class ExtractorPdfTest {
             Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
 
             // Assert
-            assertFalse(ExtractorPdf.EXAM_AE.matcher("Portugues").matches());
-            assertFalse(ExtractorPdf.EXAM_AE.matcher("CC").matches());
-            assertFalse(ExtractorPdf.EXAM_AE.matcher("B123").matches());
+            assertFalse(ExtractorPdf.ANSWER_PATTERN.matcher("Portugues").matches());
+            assertFalse(ExtractorPdf.ANSWER_PATTERN.matcher("CC").matches());
+            assertFalse(ExtractorPdf.ANSWER_PATTERN.matcher("B123").matches());
 
             assertEquals("A", result.get(1));
             assertEquals("B", result.get(2));
@@ -250,8 +247,8 @@ class ExtractorPdfTest {
         }
 
         @Test
-        @DisplayName("Should get the first answer when there is more than 2 answers")
-        void shouldGetTheFirstAnswerWhenThereIsMoreThan2Answers() {
+        @DisplayName("Should get the first answer when there is more than 2 answers for the same question even if is spanish")
+        void shouldGetTheFirstAnswerWhenThereIsMoreThan2AnswersForTheSameQuestionEvenIfIsSpanish() {
             // Arrange
             String text = """
                     ENEM 2024
@@ -286,9 +283,9 @@ class ExtractorPdfTest {
             Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null);
 
             // Assert
-            assertEquals("Anulada", result.get(1));
-            assertEquals("anulado", result.get(2));
-            assertEquals("Anulado", result.get(3));
+            assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(1));
+            assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(2));
+            assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(3));
         }
 
         @Test

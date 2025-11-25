@@ -10,9 +10,7 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -20,9 +18,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 public class ExtractorPdf {
-    private static final Pattern EXAM_LINE_PATTERN_DIGIT_AND_ANSWER = Pattern.compile("^\\d+\\s+.*$");
-    private static final Pattern EXAM_LINE_PATTERN_ONE_DIGIT_ONLY = Pattern.compile("^\\d+$");
-    public static final Pattern EXAM_AE = Pattern.compile("(?i)([a-e])");
+    public static final Pattern ANSWER_PATTERN = Pattern.compile("(?i)^[a-e]$");
     private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
     public static final String CANCELED_ANSWER = "Anulado";
 
@@ -40,38 +36,85 @@ public class ExtractorPdf {
         int examYear = extractExamYearFromText(text);
         boolean isOldYear = checkIfOldYear(examYear);
 
-        return Arrays.stream(text.split("\\r?\\n"))
+        Map<Integer, String> answers = new LinkedHashMap<>();
+
+        LinkedList<String> tokens = Arrays.stream(text.split("\\s+"))
                 .map(String::trim)
-                .filter(line -> !line.isEmpty())
-                .filter(line -> EXAM_LINE_PATTERN_DIGIT_AND_ANSWER.matcher(line).matches() || EXAM_LINE_PATTERN_ONE_DIGIT_ONLY.matcher(line).matches())
-                .collect(Collectors.toMap(
-                        line -> Integer.parseInt(line.replaceAll(" .*$", "")),
-                        line -> {
-                            String[] parts = line.split("\\s+");
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toCollection(LinkedList::new));
 
-                            int questionNumber = Integer.parseInt(parts[0]);
-                            String firstOp = parts.length >= 2 ? parts[1] : "";
-                            String secondOp = parts.length >= 3 ? parts[2] : "";
+        while (!tokens.isEmpty()) {
+            String token = tokens.poll();
 
-                            if (parts.length == 1) {
-                                return CANCELED_ANSWER;
-                            }
+            if (isQuestionNumber(token)) {
+                int questionNumber = Integer.parseInt(token);
 
-                            if (parts.length == 3 &&
-                                    LanguageOption.ESPANHOL.equals(languageOption) &&
-                                    (
-                                            (isOldYear && questionNumber >= 91 && questionNumber <= 95) ||
-                                            (!isOldYear && questionNumber >= 1 && questionNumber <= 5)
-                                    ) &&
-                                    EXAM_AE.matcher(secondOp).matches())
-                                    return secondOp;
-                            else {
-                                return firstOp;
-                            }
-                        },
-                        (a, b) -> b,
-                        LinkedHashMap::new
-                ));
+                List<String> candidates = extractAnswerCandidates(tokens);
+                String finalAnswer = resolveAnswer(questionNumber, candidates, languageOption, isOldYear);
+
+                answers.put(questionNumber, finalAnswer);
+            }
+        }
+
+        return answers;
+    }
+
+    /**
+     * Olha para frente na fila e captura sequências de respostas (A, B...) ou Anulado.
+     * Remove da fila os tokens que forem consumidos como candidatos.
+     */
+    private List<String> extractAnswerCandidates(LinkedList<String> tokens) {
+        List<String> candidates = new ArrayList<>();
+
+        String first = tokens.peek();
+
+        if (first == null) return Collections.emptyList();
+
+        if (first.startsWith(CANCELED_ANSWER) || CANCELED_ANSWER.equalsIgnoreCase(first)) {
+            tokens.poll();
+            return List.of(CANCELED_ANSWER);
+        }
+
+        while (tokens.peek() != null && ANSWER_PATTERN.matcher(tokens.peek()).matches()) {
+            candidates.add(tokens.poll());
+        }
+
+        return candidates;
+    }
+
+    /**
+     * Lógica de Negócio Pura: Dado um cenário (ex: Questão 2, Candidatos [A, B]), qual a resposta?
+     */
+    private String resolveAnswer(int questionNumber, List<String> candidates, LanguageOption languageOption, boolean isOldYear) {
+        if (candidates.isEmpty()) {
+            return CANCELED_ANSWER;
+        }
+
+        if (candidates.get(0).equals(CANCELED_ANSWER)) {
+            return CANCELED_ANSWER;
+        }
+
+        if (candidates.size() == 2 && shouldSelectSecondOption(questionNumber, languageOption, isOldYear)) {
+            return candidates.get(1);
+        }
+
+        return candidates.get(0);
+    }
+
+    private boolean shouldSelectSecondOption(int questionNumber, LanguageOption languageOption, boolean isOldYear) {
+        if (!LanguageOption.ESPANHOL.equals(languageOption)) {
+            return false;
+        }
+
+        if (isOldYear) {
+            return questionNumber >= 91 && questionNumber <= 95;
+        } else {
+            return questionNumber >= 1 && questionNumber <= 5;
+        }
+    }
+
+    private boolean isQuestionNumber(String token) {
+        return token.matches("^\\d+$");
     }
 
     private int extractExamYearFromText(String text) {
