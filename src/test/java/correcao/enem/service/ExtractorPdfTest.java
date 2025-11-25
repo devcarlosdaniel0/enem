@@ -309,23 +309,5 @@ class ExtractorPdfTest {
             assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(2));
             assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(3));
         }
-
-        @Test
-        @DisplayName("Should transforms nulls in cancelled")
-        void shouldTransformsNullsInCancelled() {
-            // Arrange
-            String text = """
-                    ENEM 2024
-                    1 
-                    2
-                    """;
-
-            // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null);
-
-            // Assert
-            assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(1));
-            assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(2));
-        }
     }
 }

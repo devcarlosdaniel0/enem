@@ -21,6 +21,7 @@ public class ExtractorPdf {
     public static final Pattern ANSWER_PATTERN = Pattern.compile("(?i)^[a-e]$");
     private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
     public static final String CANCELED_ANSWER = "Anulado";
+    public static final String START_WITH_CANCELLED_ANSWER = "ANULAD";
 
     public String extractContentFromPdf(MultipartFile multipartFile) {
         try (PDDocument document = PDDocument.load(multipartFile.getInputStream())) {
@@ -36,7 +37,7 @@ public class ExtractorPdf {
         int examYear = extractExamYearFromText(text);
         boolean isOldYear = checkIfOldYear(examYear);
 
-        Map<Integer, String> answers = new LinkedHashMap<>();
+        Map<Integer, String> answers = new TreeMap<>();
 
         LinkedList<String> tokens = Arrays.stream(text.split("\\s+"))
                 .map(String::trim)
@@ -49,10 +50,15 @@ public class ExtractorPdf {
             if (isQuestionNumber(token)) {
                 int questionNumber = Integer.parseInt(token);
 
-                List<String> candidates = extractAnswerCandidates(tokens);
-                String finalAnswer = resolveAnswer(questionNumber, candidates, languageOption, isOldYear);
+                if (questionNumber < 1 || questionNumber > 180) continue;
 
-                answers.put(questionNumber, finalAnswer);
+                List<String> candidates = extractAnswerCandidates(tokens);
+
+                if (!candidates.isEmpty()) {
+                    String finalAnswer = resolveAnswer(questionNumber, candidates, languageOption, isOldYear);
+
+                    answers.put(questionNumber, finalAnswer);
+                }
             }
         }
 
@@ -70,7 +76,7 @@ public class ExtractorPdf {
 
         if (first == null) return Collections.emptyList();
 
-        if (first.startsWith(CANCELED_ANSWER) || CANCELED_ANSWER.equalsIgnoreCase(first)) {
+        if (first.toUpperCase().startsWith(START_WITH_CANCELLED_ANSWER) || CANCELED_ANSWER.equalsIgnoreCase(first)) {
             tokens.poll();
             return List.of(CANCELED_ANSWER);
         }
@@ -86,10 +92,6 @@ public class ExtractorPdf {
      * Lógica de Negócio Pura: Dado um cenário (ex: Questão 2, Candidatos [A, B]), qual a resposta?
      */
     private String resolveAnswer(int questionNumber, List<String> candidates, LanguageOption languageOption, boolean isOldYear) {
-        if (candidates.isEmpty()) {
-            return CANCELED_ANSWER;
-        }
-
         if (candidates.get(0).equals(CANCELED_ANSWER)) {
             return CANCELED_ANSWER;
         }
