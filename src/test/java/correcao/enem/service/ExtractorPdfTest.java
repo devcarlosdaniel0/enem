@@ -269,6 +269,28 @@ class ExtractorPdfTest {
         }
 
         @Test
+        @DisplayName("Should get the answer correctly even if is in the same line")
+        void shouldGetTheAnswerCorrectlyEvenIfIsInTheSameLine() {
+            // Arrange
+            String text = """
+                    Fatec 2022
+                    1 B MULTIDISCIPLINAR 28 D PORTUGUÊS 29 E MULTIDISCIPLINAR
+                    2 C BIOLOGIA 
+                    """;
+
+            LanguageOption spanish = LanguageOption.ESPANHOL;
+
+            // Act
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
+
+            // Assert
+            assertEquals("B", result.get(1));
+            assertEquals("C", result.get(2));
+            assertEquals("D", result.get(28));
+            assertEquals("E", result.get(29));
+        }
+
+        @Test
         @DisplayName("Should get the first answer option when cancelled")
         void shouldGetTheFirstAnswerOptionWhenCancelled() {
             // Arrange
