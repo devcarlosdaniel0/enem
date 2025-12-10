@@ -39,7 +39,7 @@ class ExtractorPdfTest {
             LanguageOption spanish = LanguageOption.ESPANHOL;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish, null);
 
             // Assert
             assertEquals("B", result.get(1));
@@ -67,7 +67,7 @@ class ExtractorPdfTest {
             LanguageOption spanish = LanguageOption.ESPANHOL;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish, null);
 
             // Assert
             assertEquals("B", result.get(91));
@@ -95,7 +95,7 @@ class ExtractorPdfTest {
             LanguageOption spanish = LanguageOption.ESPANHOL;
 
             // Act
-            assertThrows(InvalidYearException.class, () -> extractorPdf.extractCorrectAnswersFromPdfText(text, spanish));
+            assertThrows(InvalidYearException.class, () -> extractorPdf.extractCorrectAnswersFromPdfText(text, spanish, null));
 
         }
 
@@ -115,7 +115,7 @@ class ExtractorPdfTest {
             LanguageOption english = LanguageOption.INGLES;
 
             // Act
-            assertThrows(ExamYearNotFoundException.class, () -> extractorPdf.extractCorrectAnswersFromPdfText(text, english));
+            assertThrows(ExamYearNotFoundException.class, () -> extractorPdf.extractCorrectAnswersFromPdfText(text, english, null));
 
         }
 
@@ -136,7 +136,7 @@ class ExtractorPdfTest {
             LanguageOption english = LanguageOption.INGLES;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, english);
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, english, null);
 
             // Assert
             assertEquals("A", result.get(1));
@@ -162,7 +162,7 @@ class ExtractorPdfTest {
             LanguageOption spanish = LanguageOption.ESPANHOL;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish, null);
 
             // Assert
             assertEquals("E", result.get(5));
@@ -187,7 +187,7 @@ class ExtractorPdfTest {
             LanguageOption spanish = LanguageOption.ESPANHOL;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish, null);
 
             // Assert
             assertEquals("E", result.get(95));
@@ -212,7 +212,7 @@ class ExtractorPdfTest {
             LanguageOption spanish = LanguageOption.ESPANHOL;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish, null);
 
             // Assert
             assertFalse(ExtractorPdf.ANSWER_PATTERN.matcher("Portugues").matches());
@@ -238,7 +238,7 @@ class ExtractorPdfTest {
                     """;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null);
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null, null);
 
             // Assert
             assertEquals("A", result.get(1));
@@ -260,7 +260,7 @@ class ExtractorPdfTest {
             LanguageOption spanish = LanguageOption.ESPANHOL;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish, null);
 
             // Assert
             assertEquals("A", result.get(1));
@@ -281,7 +281,7 @@ class ExtractorPdfTest {
             LanguageOption spanish = LanguageOption.ESPANHOL;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish);
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, spanish, null);
 
             // Assert
             assertEquals("B", result.get(1));
@@ -302,7 +302,7 @@ class ExtractorPdfTest {
                     """;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null);
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null, null);
 
             // Assert
             assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(1));

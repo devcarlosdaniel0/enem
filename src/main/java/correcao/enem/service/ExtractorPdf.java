@@ -33,11 +33,14 @@ public class ExtractorPdf {
         }
     }
 
-    public Map<Integer, String> extractCorrectAnswersFromPdfText(String text, LanguageOption languageOption) {
-        int examYear = extractExamYearFromText(text);
-        boolean isOldYear = checkIfOldYear(examYear);
+    public Map<Integer, String> extractCorrectAnswersFromPdfText(String text, LanguageOption languageOption, Integer manualExamYear) {
+        int finalExamYear = manualExamYear != null
+                ? manualExamYear :
+                extractExamYearFromText(text);
 
-        Map<Integer, String> answers = new TreeMap<>();
+        boolean isOldYear = checkIfOldYear(finalExamYear);
+
+        Map<Integer, String> answerKey = new TreeMap<>();
 
         LinkedList<String> tokens = Arrays.stream(text.split("\\s+"))
                 .map(String::trim)
@@ -57,12 +60,12 @@ public class ExtractorPdf {
                 if (!candidates.isEmpty()) {
                     String finalAnswer = resolveAnswer(questionNumber, candidates, languageOption, isOldYear);
 
-                    answers.put(questionNumber, finalAnswer);
+                    answerKey.put(questionNumber, finalAnswer);
                 }
             }
         }
 
-        return answers;
+        return answerKey;
     }
 
     /**
@@ -130,10 +133,10 @@ public class ExtractorPdf {
     }
 
     private boolean checkIfOldYear(int examYear) {
-        if (examYear < 2015) {
-            throw new InvalidYearException("The correction of exams goes to 2015 to actual year.");
+        if (examYear < 2011) {
+            throw new InvalidYearException("The correction of exams goes to 2011 to actual year.");
         }
 
-        return examYear >= 2015 && examYear <= 2016;
+        return examYear <= 2016;
     }
 }

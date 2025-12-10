@@ -2,6 +2,7 @@ package correcao.enem.service;
 
 import correcao.enem.dto.ResultResponse;
 import correcao.enem.dto.UserAnswersRequest;
+import correcao.enem.enums.LanguageOption;
 import correcao.enem.exceptions.FileNotPdfException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,7 @@ public class ExamCorrectionService {
     private final ExamGrader examGrader;
     private final PdfValidator pdfValidator;
 
-    public ResultResponse correctExam(MultipartFile file, UserAnswersRequest userAnswersRequest) {
+    public ResultResponse correctExam(MultipartFile file, UserAnswersRequest request) {
         boolean isPdf = pdfValidator.validatePDF(file);
 
         if (!isPdf) {
@@ -24,9 +25,13 @@ public class ExamCorrectionService {
         }
 
         String text = extractorPdf.extractContentFromPdf(file);
-        Map<Integer, String> answerKey = extractorPdf.extractCorrectAnswersFromPdfText(text, userAnswersRequest.languageOption());
 
-        Map<Integer, String> userAnswers = userAnswersRequest.answers();
+        Map<Integer, String> answerKey = extractorPdf.extractCorrectAnswersFromPdfText(
+                text,
+                request.languageOption(),
+                request.manualExamYear());
+
+        Map<Integer, String> userAnswers = request.answers();
 
         return examGrader.grade(userAnswers, answerKey);
     }

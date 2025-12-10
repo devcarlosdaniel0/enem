@@ -23,7 +23,7 @@ class UserAnswersRequestTest {
                 4, "E"));
 
         // Act
-        UserAnswersRequest userAnswersRequest = new UserAnswersRequest(LanguageOption.INGLES, answers);
+        UserAnswersRequest userAnswersRequest = new UserAnswersRequest(LanguageOption.INGLES, null, answers);
 
         // Assert
         assertEquals("A", userAnswersRequest.answers().get(1));
@@ -45,7 +45,7 @@ class UserAnswersRequestTest {
         Pattern regEx = Pattern.compile("(?i)[a-e]");
 
         // Act
-        UserAnswersRequest userAnswersRequest = new UserAnswersRequest(LanguageOption.INGLES, answers);
+        UserAnswersRequest userAnswersRequest = new UserAnswersRequest(LanguageOption.INGLES, null, answers);
 
         // Assert
         assertFalse(regEx.matcher(userAnswersRequest.answers().get(1)).matches());

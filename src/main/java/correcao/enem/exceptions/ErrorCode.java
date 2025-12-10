@@ -6,7 +6,7 @@ public enum ErrorCode {
     QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "That question could not be found."),
     PDF_PARSE_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while trying to parse PDF content."),
     EXAM_YEAR_NOT_FOUND(HttpStatus.NOT_FOUND, "Exam year not found in answer key."),
-    INVALID_EXAM_YEAR(HttpStatus.BAD_REQUEST, "The year of exam is lower than we accept."),
+    INVALID_EXAM_YEAR(HttpStatus.BAD_REQUEST, "The exam year is invalid."),
     INVALID_PARAMETERS(HttpStatus.BAD_REQUEST, "Your request parameters did not validate!"),
     FILE_NOT_PDF(HttpStatus.BAD_REQUEST, "The file uploaded is not a valid PDF."),
     UNKNOWN_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error.");
