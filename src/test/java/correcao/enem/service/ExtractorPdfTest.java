@@ -309,5 +309,43 @@ class ExtractorPdfTest {
             assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(2));
             assertEquals(ExtractorPdf.CANCELED_ANSWER, result.get(3));
         }
+
+        @Test
+        @DisplayName("Should priorize the manual exam year")
+        void shouldPriorizeTheManualExamYear() {
+            // Arrange
+            String text = """
+                    ENEM 2024
+                    1 A C
+                    2 B D
+                    3 C E
+                    """;
+
+            int manualExamYear = 2025;
+
+            // Act
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null, manualExamYear);
+
+            // Assert
+            assertEquals(2025, extractorPdf.getFinalExamYear());
+        }
+
+        @Test
+        @DisplayName("Should extract exam year from the text when manual exam year is null")
+        void shouldExtractExamYearFromTheTextWhenManualExamYearIsNull() {
+            // Arrange
+            String text = """
+                    ENEM 2024
+                    1 A C
+                    2 B D
+                    3 C E
+                    """;
+
+            // Act
+            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null, null);
+
+            // Assert
+            assertEquals(2024, extractorPdf.getFinalExamYear());
+        }
     }
 }

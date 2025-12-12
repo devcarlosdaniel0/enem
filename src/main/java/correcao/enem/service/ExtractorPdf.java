@@ -22,6 +22,7 @@ public class ExtractorPdf {
     private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
     public static final String CANCELED_ANSWER = "Anulado";
     public static final String START_WITH_CANCELLED_ANSWER = "ANULAD";
+    private int finalExamYear;
 
     public String extractContentFromPdf(MultipartFile multipartFile) {
         try (PDDocument document = PDDocument.load(multipartFile.getInputStream())) {
@@ -34,7 +35,7 @@ public class ExtractorPdf {
     }
 
     public Map<Integer, String> extractCorrectAnswersFromPdfText(String text, LanguageOption languageOption, Integer manualExamYear) {
-        int finalExamYear = manualExamYear != null
+        finalExamYear = manualExamYear != null
                 ? manualExamYear :
                 extractExamYearFromText(text);
 
@@ -138,5 +139,9 @@ public class ExtractorPdf {
         }
 
         return examYear <= 2016;
+    }
+
+    public int getFinalExamYear() {
+        return finalExamYear;
     }
 }
