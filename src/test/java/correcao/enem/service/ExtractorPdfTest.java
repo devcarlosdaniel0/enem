@@ -79,8 +79,8 @@ class ExtractorPdfTest {
         }
 
         @Test
-        @DisplayName("Should throw exception when exam year is lower than 2015")
-        void shouldThrowExceptionWhenExamYearIsLowerThan2015() {
+        @DisplayName("Should throw exception when exam year is lower than 2011")
+        void shouldThrowExceptionWhenExamYearIsLowerThan2011() {
             // Arrange
             String text = """
                     ENEM 2010
