@@ -22,7 +22,6 @@ public class ExtractorPdf {
     private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
     public static final String CANCELED_ANSWER = "Anulado";
     public static final String START_WITH_CANCELLED_ANSWER = "ANULAD";
-    private int finalExamYear;
 
     public String extractContentFromPdf(MultipartFile multipartFile) {
         try (PDDocument document = PDDocument.load(multipartFile.getInputStream())) {
@@ -35,26 +34,22 @@ public class ExtractorPdf {
     }
 
     public Map<Integer, String> extractCorrectAnswersFromPdfText(String text, LanguageOption languageOption, Integer manualExamYear) {
-        finalExamYear = manualExamYear != null
-                ? manualExamYear :
-                extractExamYearFromText(text);
-
+        int finalExamYear = resolveExamYear(text, manualExamYear);
         boolean isOldYear = checkIfOldYear(finalExamYear);
 
-        Map<Integer, String> answerKey = new TreeMap<>();
+        LinkedList<String> tokens = tokenize(text);
 
-        LinkedList<String> tokens = Arrays.stream(text.split("\\s+"))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toCollection(LinkedList::new));
+        Map<Integer, String> answerKey = new TreeMap<>();
 
         while (!tokens.isEmpty()) {
             String token = tokens.poll();
 
-            if (isQuestionNumber(token)) {
+            if (isTokenNumber(token)) {
                 int questionNumber = Integer.parseInt(token);
 
-                if (questionNumber < 1 || questionNumber > 180) continue;
+                if (questionNumber < 1 || questionNumber > 180) {
+                    continue;
+                }
 
                 List<String> candidates = extractAnswerCandidates(tokens);
 
@@ -69,6 +64,19 @@ public class ExtractorPdf {
         return answerKey;
     }
 
+    private static LinkedList<String> tokenize(String text) {
+        return Arrays.stream(text.split("\\s+"))
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.toCollection(LinkedList::new));
+    }
+
+    protected int resolveExamYear(String text, Integer manualExamYear) {
+        return manualExamYear != null
+                ? manualExamYear :
+                extractExamYearFromText(text);
+    }
+
     /**
      * Olha para frente na fila e captura sequências de respostas (A, B...) ou Anulado.
      * Remove da fila os tokens que forem consumidos como candidatos.
@@ -78,7 +86,9 @@ public class ExtractorPdf {
 
         String first = tokens.peek();
 
-        if (first == null) return Collections.emptyList();
+        if (first == null) {
+            return Collections.emptyList();
+        }
 
         if (first.toUpperCase().startsWith(START_WITH_CANCELLED_ANSWER) || CANCELED_ANSWER.equalsIgnoreCase(first)) {
             tokens.poll();
@@ -119,7 +129,7 @@ public class ExtractorPdf {
         }
     }
 
-    private boolean isQuestionNumber(String token) {
+    private boolean isTokenNumber(String token) {
         return token.matches("^\\d+$");
     }
 
@@ -139,9 +149,5 @@ public class ExtractorPdf {
         }
 
         return examYear <= 2016;
-    }
-
-    public int getFinalExamYear() {
-        return finalExamYear;
     }
 }

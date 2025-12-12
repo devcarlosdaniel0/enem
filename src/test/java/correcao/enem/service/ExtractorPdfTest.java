@@ -324,10 +324,10 @@ class ExtractorPdfTest {
             int manualExamYear = 2025;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null, manualExamYear);
+            int finalExamYear = extractorPdf.resolveExamYear(text, manualExamYear);
 
             // Assert
-            assertEquals(2025, extractorPdf.getFinalExamYear());
+            assertEquals(2025, finalExamYear);
         }
 
         @Test
@@ -342,10 +342,10 @@ class ExtractorPdfTest {
                     """;
 
             // Act
-            Map<Integer, String> result = extractorPdf.extractCorrectAnswersFromPdfText(text, null, null);
+            int finalExamYear = extractorPdf.resolveExamYear(text, null);
 
             // Assert
-            assertEquals(2024, extractorPdf.getFinalExamYear());
+            assertEquals(2024, finalExamYear);
         }
     }
 }
