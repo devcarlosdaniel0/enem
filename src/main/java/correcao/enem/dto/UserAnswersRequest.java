@@ -9,7 +9,7 @@ import java.util.Map;
 
 public record UserAnswersRequest(LanguageOption languageOption,
                                  Integer manualExamYear,
-                                 @NotBlank Map<@Min(value = 1) @Max(value = 180) Integer,
+                                 @NotNull Map<@Min(value = 1) @Max(value = 180) Integer,
                                          @Pattern(regexp = "(?i)[a-e]") String> answers) {
 
     public UserAnswersRequest {
