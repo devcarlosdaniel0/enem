@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Service
 public class ExtractorPdf {
     public static final Pattern ANSWER_PATTERN = Pattern.compile("(?i)^[a-e]$");
-    private static final Pattern YEAR_PATTERN = Pattern.compile("\\d{4}");
+    private static final Pattern YEAR_PATTERN = Pattern.compile("\\b(19|20)\\d{2}\\b");
     public static final String CANCELED_ANSWER = "Anulado";
     public static final String START_WITH_CANCELLED_ANSWER = "ANULAD";
 
