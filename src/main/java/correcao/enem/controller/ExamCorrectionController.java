@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/v1/correct-exam")
 @RequiredArgsConstructor
