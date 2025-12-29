@@ -4,6 +4,13 @@ Aplicação web para **correção automática de provas do ENEM** a partir de PD
 
 ---
 
+## 🖥️ Front-end
+
+- Aplicação: https://enem-front.vercel.app/
+- Documentação: https://github.com/devcarlosdaniel0/enem-front
+
+---
+
 ## 🛠️ Tecnologias
 
 - Java 17
@@ -195,10 +202,3 @@ A API está disponível em: 👉 https://enem-icih.onrender.com
 
 - Base URL: https://enem-icih.onrender.com
 - Endpoint (POST): `/api/v1/correct-exam`
-
----
-
-## 🖥️ Front end
-
-- Aplicação: https://enem-front.vercel.app/
-- Documentação: https://github.com/devcarlosdaniel0/enem-front
