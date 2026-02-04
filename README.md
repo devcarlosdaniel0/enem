@@ -11,6 +11,15 @@ Aplicação web para **correção automática de provas do ENEM** a partir de PD
 
 ---
 
+## 🌐 Aplicação em produção
+
+A API está disponível em: 👉 https://enem-icih.onrender.com
+
+- Base URL: https://enem-icih.onrender.com
+- Endpoint (POST): `/api/v1/correct-exam`
+
+---
+
 ## 🛠️ Tecnologias
 
 - Java 17
@@ -194,11 +203,4 @@ erros, questões anuladas e o gabarito esperado.
 | `expectedAnswers`    | Object  | Respostas contendo a alternativa correta               |
 | `cancelledQuestions` | Object  | Questões anuladas                                      |
 
----
 
-## 🌐 Aplicação em produção
-
-A API está disponível em: 👉 https://enem-icih.onrender.com
-
-- Base URL: https://enem-icih.onrender.com
-- Endpoint (POST): `/api/v1/correct-exam`
