@@ -4,6 +4,8 @@ import correcao.enem.dto.ResultResponse;
 import correcao.enem.exceptions.QuestionNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,7 +50,10 @@ public class ExamGrader {
         int totalQuestions = answerKey.size() - totalCanceled;
         int totalAnswered = userAnswers.size();
 
-        return buildResultResponse(correctCount, wrongCount, totalAnswered, totalQuestions, totalCanceled, wrongAnswers, expectedAnswers, cancelledQuestions);
+        double percentage = ((double) correctCount / totalAnswered) * 100;
+        BigDecimal percentageCorrect = BigDecimal.valueOf(percentage).setScale(2, RoundingMode.HALF_UP);
+
+        return buildResultResponse(correctCount, wrongCount, totalAnswered, totalQuestions, totalCanceled, percentageCorrect, wrongAnswers, expectedAnswers, cancelledQuestions);
     }
 
     private LinkedHashMap<Integer, String> findCancelled(Map<Integer, String> answerKey) {
@@ -70,13 +75,14 @@ public class ExamGrader {
         return userAnswer.equalsIgnoreCase(correctAnswer);
     }
 
-    private ResultResponse buildResultResponse(int correctCount, int wrongCount, int totalAnswered, int totalQuestions, int totalCanceled, Map<Integer, String> wrongAnswers, Map<Integer, String> expectedAnswers, Map<Integer, String> cancelledQuestions) {
+    private ResultResponse buildResultResponse(int correctCount, int wrongCount, int totalAnswered, int totalQuestions, int totalCanceled, BigDecimal percentageCorrect, Map<Integer, String> wrongAnswers, Map<Integer, String> expectedAnswers, Map<Integer, String> cancelledQuestions) {
         return ResultResponse.builder()
                 .correctCount(correctCount)
                 .wrongCount(wrongCount)
                 .totalAnswered(totalAnswered)
                 .totalQuestions(totalQuestions)
                 .totalCanceled(totalCanceled)
+                .percentageCorrect(percentageCorrect)
                 .wrongAnswers(wrongAnswers)
                 .expectedAnswers(expectedAnswers)
                 .cancelledQuestions(cancelledQuestions)
