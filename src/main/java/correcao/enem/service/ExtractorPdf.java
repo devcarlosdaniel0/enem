@@ -21,7 +21,8 @@ public class ExtractorPdf {
     public static final Pattern ANSWER_PATTERN = Pattern.compile("(?i)^[a-e]$");
     private static final Pattern YEAR_PATTERN = Pattern.compile("\\b(19|20)\\d{2}\\b");
     public static final String CANCELED_ANSWER = "Anulado";
-    public static final String START_WITH_CANCELLED_ANSWER = "ANULAD";
+    private static final String START_WITH_CANCELLED_ANSWER = "ANULAD";
+    private static final Pattern SEPARATOR_PATTERN = Pattern.compile("^[^a-zA-Z0-9]+$");
 
     public String extractContentFromPdf(MultipartFile multipartFile) {
         try (PDDocument document = PDDocument.load(multipartFile.getInputStream())) {
@@ -84,6 +85,10 @@ public class ExtractorPdf {
     private List<String> extractAnswerCandidates(LinkedList<String> tokens) {
         List<String> candidates = new ArrayList<>();
 
+        while (tokens.peek() != null && SEPARATOR_PATTERN.matcher(tokens.peek()).matches()) {
+            tokens.poll();
+        }
+
         String first = tokens.peek();
 
         if (first == null) {
@@ -103,7 +108,7 @@ public class ExtractorPdf {
     }
 
     /**
-     * Lógica de Negócio Pura: Dado um cenário (ex: Questão 2, Candidatos [A, B]), qual a resposta?
+     * Dado um cenário (ex: Questão 2, Candidatos [A, B]), qual a resposta?
      */
     private String resolveAnswer(int questionNumber, List<String> candidates, LanguageOption languageOption, boolean isOldYear) {
         if (candidates.get(0).equals(CANCELED_ANSWER)) {
